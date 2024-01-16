@@ -1,0 +1,109 @@
+Sentença de codigo, ex: console.log("Hope"); -> são linhas de codigo. pd ser aspas simples tbm.
+console.log(1); -> exibe 1
+console.log(2+3) -> exibe a soma
+
+console.log(10); -> é um valor literal, pq é um valor apenas, um valor simples.
+
+criando variável:
+var quantidade = 10;
+console.log(quantidade);
+
+obs: não é obrigatorio usar o "var" ou "let", pode ser sem, mas não é o ideal.
+ex:
+nome = "Luiz";
+console.log(nome);
+
+
+o ideal é definir variavel com 'let', ex:
+let nome = "Luiz Gustavo";
+console.log(nome);
+
+let valor = 59.99;
+let desconto = 0.40; 
+
+let valorComDesconto = valor * ( 1 - desconto); // dando 40% de desconto
+console.log(valorComDesconto);
+
+// Concatenando:
+let nome = "Luiz";
+let categoria = "SAI";
+console.log(nome + ", Categoria: " + categoria);
+
+Lembre-se que, no javascript, + é concatenação!
+obs: console.log("1"+1); -> concatenará, mostrará 11.
+
+--------
+Pra ver o tipo de algum valor, posso usar 'typeof', ex:
+console.log(typeof 31);
+Mostra que '31' é tipo number (inteiro). 
+
+Ex2: let nome = "Luiz";
+console.log(typeof nome);
+
+OBS: Javascript não diferencia inteiros de números de casas decimais
+
+let estaChovendo = true;
+console.log(typeof estaChovendo);
+---------
+Fazer uma variável constante:
+
+const valor = 10;
+
+Agora, não conseguiria mais mudar o valor dessa variável.
+valor = 5; -> daria erro.
+--------
+lembrando q javascript é tipagem fraca.
+var a = 10;
+let b = 5;
+const nome = "Luiz";
+----------
+const peso1 = 1.0;
+const peso2 = Number('2.0'); // função Number é uma forma de criar um número. 
+
+console.log(peso1, peso2);
+
+/\ vai mostrar 1 e 2
+
+agora, outra função:
+console.log(Number.isInteger(peso1)); // vai mostrar true ou falso se é number. embora 1.0 seja ponto flutuante, ele continua sendo inteiro. mas se fosse valendo 1.5, ele iria passar false.
+
+---------
+
+agora, outras funções:
+const avaliacao1 = 8.5;
+const avaliacao2 = 9.5;
+
+const avaliacaoTotal = (avaliacao1 + avaliacao2)/2;
+
+console.log(avaliacaoTotal.toFixed(2)); // assim, mostra a média pura, consertada. '2' é a qtd de casas decimais dps da virgula.
+console.log(avaliacaoTotal.toString()); // assim, mostra o valor puro do cálculo da média, em string. 
+
+pra converter em valor binário, faria:
+console.log(avaliacaoTotal.toString(2)); // em binário
+
+OBS: 
+Number => função
+number => tipo de dado de valor numerico.
+
+console.log(typeof Number);
+console.log(typeof number);
+/\ irá mostrar coisas diferentes.
+
+-----------
+
+const raio = 5.6
+const area = Math.PI * Math.pow(raio,2); // pow é (isso elevado a isto);
+
+console.log(area);
+
+/\ mostrando área de uma circunferência
+Math é um objeto. veja em console.log(typeof Math);
+
+const nomeCode = "Code3";
+console.log(nomeCode.indexof(3));
+/\ vai mostrar o indice (posicao) de onde tem 3 na String, isto é, vai procurar onde tem 3 na string e me retornar a posiçao/indice de onde tá.
+da mesma maneira seria:
+console.log(nomecode.indexOf('o'));
+/\ vai me retornar 1 pq é a posiçao onde tem 'o'.
+
+console.log(escola.substring(1)); // vai me mostrar a string a partir de

@@ -1,0 +1,465 @@
+-------
+
+Trabalhando com Strings:
+
+const escola = "Lemos";
+console.log(escola.charat(4)); // vai pegar o caractere de 'Escola' no indice 4. L = 0, E = 1, M = 2, O = 3, S = 4. Ou seja, vai mostrar na tela 's'.
+
+pra pegar o valor do caractere na tabela ASC.
+console.log(escola.charCodeAt(3)); // vai pegar o valor ASC do indice 3 no caractere escola. isto é, vai retonar o valor asc de 'o' em 'lemos'.
+
+const nomeCode = "Code3";
+console.log(nomeCode.indexof(3));
+/\ vai mostrar o indice (posicao) de onde tem 3 na String, isto é, vai procurar onde tem 3 na string e me retornar a posiçao/indice de onde tá.
+da mesma maneira seria:
+console.log(nomecode.indexOf('o'));
+/\ vai me retornar 1 pq é a posiçao onde tem 'o'.
+
+console.log(escola.substring(1)); // vai me mostrar a string a partir do indice '1', ou seja, iria mostrar 'emos'.
+e tb podemos:
+console.log(escola.substring(0,3)); -> indo do indice 0 até o indice 3, ou seja, antes do 3 para, mostraria apenas: 'Lem'.
+
+convertendo elementos strings em array: 
+console.log('Ana,Maria,Pedro'.split(','));
+/\ gera um array com 3 elementos
+
+----------
+
+Templates Strings:
+let nome = "Luiz";
+const concatenacao = 'Olá ' + nome + '!'; 
+
+const template =  `
+    Olá
+    ${nome}!`
+console.log(concatenacao, template);
+
+-> O que estiver com chaves antes e entre colchetes sim ele vai interpretar, e pra abrir template strings tem q usar ` [...] `
+
+outro exemplo: console.log(`1+1 = ${1 + 1}`);
+
+a delimitação de um template string é com ` `
+
+-----------
+
+Array:
+const valores = [7.7, 8.9, 6.3, 9.2];
+console.log(valores[1]);
+
+console.log(valores.length);
+
+Adicionando elementos no array:
+valores.push({id:3}, false, null, 'teste');
+console.log(valores);
+
+/\ Vai mostrar: [ 7.7, 8.9, 6.3, 9.2, { id: 3 }, false, null, 'teste' ] , pois você adicionou elementos no array 'valores'.
+
+console.log(valores.pop()); -> vai tirar do array somente o ultimo elemento do array, remover.
+outro jeito:
+delete valores[0];
+console.log(valores); 
+/\ verá que não terá mais o primeiro elemento do array, removerá o 7.7
+
+ver o tipo do array, retornando 'object' -> console.log(typeof valores); , embora seja array.
+
+--------
+
+Objeto em JavaScript:
+JSON -> formato textual, não é objecto em javascript de forma literal.
+
+um par de chaves representa um objeto.
+ex:
+const prod1 = {};
+prod1.nome = "iPhone 11";
+
+da onde veio esse 'nome'? 'nome' foi criado dinamicamente dentro do objeto. um objeto é sempre uma coleção de chaves com valor.
+
+prod1.preco = 798.99;
+console.log(prod1); 
+
+/\ vai mostrar o nome e o preco.
+
+posso usar nome de identificadores com espaço.
+ex: prod1['Desconto Legal'] = 0.40;
+
+/\ gerou dentro do objeto um par chave valor, mas agora usando identificador com espaço. mas evitem isso.
+
+outra forma criar usando notaçao literal, ja criar a chave valor dentro da propria declaração do objeto:
+const prod2 = {
+    nome: 'Camisa Polo',
+    preco:79.90
+}
+console.log(prod2);
+
+criando obj dentro:
+const prod2 = {
+    nome: 'Camisa Polo',
+    preco:79.90,
+    obj: {
+        blabla: 2
+    }
+}
+console.log(prod2);
+/\ aí é bom pra colocar preco e dentro do preço colocar desconto.
+
+const a = {nome: 'Luiz'};
+
+---------
+null e undefined:
+let valor;
+console.log(valor);
+/\ essa variavel nunca foi definida nem nada, portanto ela será indefinida. ela nao foi inicializada, nao aponta pra lugar nenhum na memoria.
+
+null significa ausencia de valor. significa q ela ta vazia. ela aponta pra um determinado lugar na memoria, mas esse lugar ta vazio.
+ex:
+let valor = null;
+console.log(valor);
+
+-----------
+
+função -> importantissimo
+class NomeFuncao()
+{
+    [...]
+}
+
+ou 
+function NomeFuncao()
+{
+    ...
+}
+
+// Função sem retorno: 
+function imprimirSoma(a,b)
+{
+    console.log(a+b);
+}
+
+imprimirSoma(2,3);
+
+// Função com retorno:
+function imprimirSoma(a,b)
+{
+    return a+b;
+}
+
+console.log(imprimirSoma(2,3));
+
+ou 
+function imprimirSoma(a,b = 1)
+{
+    return a+b;
+}
+
+console.log(imprimirSoma(2));
+
+-------------
+
+Armazenando função em uma variável:
+const imprimirSoma = function (a,b)
+{
+    console.log(a+b);
+}
+imprimirSoma(3,3);
+
+--------
+
+Armazenando função arrow em uma variável:
+// Com retorno explícito
+const soma = (a,b) => 
+{
+    return a + b;
+}
+
+// com retorno implicito:
+const soma = (a,b) => a + b;
+console.log(soma(2,3));
+
+/\ forma reduzida de criar uma funçãod entro de uma variável
+
+=> é a arrow function
+
+Função com um unico parametro:
+const imprimir2 = a => console.log(a);
+imprimir2(3);
+
+---------
+
+uma variavel dentro de um bloco de codigo pode ser lida fora do bloco de codigo tbm: 
+{
+    {
+        {
+            {
+                {  
+                    var a = 10;
+                }
+            }
+        }
+    }
+}
+console.log(a);
+
+agora, se fosse declarado função, aí não iria funcionar.
+
+Tudo que for declarado fora de função, que tem na sua pagina, desenvolvido dentro de uma pagina, estará dentro de uma 'window', q é um objeto global. basta ir em inspecionar > console.
+Criando variavel global em javascript, ele vai para em 'window', usando 'window.nomevariavelglobal', ideal é criar variavel dentro do escopo de função.
+
+---------
+
+var numero = 2
+{
+    var numero = 3;
+    console.log('dentro =', numero);
+}
+console.log(numero);
+
+pode ter variaveis iguais com mesmo nome? pode, desde q sejam escopo diferentes. neste caso. mostra  dentro = 3 e depois mostra '3' de novo, pois 'numero' é variavel global. não existe escopo para variavel do tipo 'var', no caso { }, muda msm assim.
+
+VAR NÃO TEM ESCOPO DE BLOCO, É VARIÁVEL GLOBAL.
+
+agora, se fosse:
+var numero = 1
+{
+    let numero = 2;
+    console.log('dentro = ', numero);
+}
+console.log('fora = ', numero);
+
+irá mostrar '2' e '1', pois o let dá preferencia ao escopo menor
+---------
+
+usando 'Var' em loop:
+for(var i = 0; i < 10; i)
+{
+    console.log(i);
+}
+console.log('i = ', i);
+o 'i' fora do 'for' vai mostrar? SIM, pois como dito, 'var' não tem escopo, é global.
+
+agora, se fosse:
+for(let i = 0; i < 10; i++)
+{
+    console.log(i);
+}
+console.log('i = ', i);
+
+/\ o 'i' não estaria disponivel, pois foi feito com 'let'.
+
+
+---------
+
+=> !!! VAR NÃO TEM ESCOPO DE FUNÇÃO.
+
+
+const funcs = []; // iniciando um array
+
+for (var i = 0; i < 10; i++)
+{
+    funcs.push(function() // adicionando novo elemento no array 'funcs'.
+    {
+        console.log(i);
+    })  
+}
+
+funcs[2]();
+funcs[8]();
+
+/\ irá mostrar '10' independente, justamente pq com 'var' não tem escopo de FUNÇÃO. agora, se eu definisse com 'let', iria mostrar '2' e '8'.
+
+-------------
+
+Hoisting :
+ 
+o javascript tem isso, oq é? basicamente, criando variavel com var, independente do local, joga ela pra cima automaticamente, ex:
+console.log(a);
+var a = 2;
+console.log(a);
+ira imprimir undefined e '2', undefined pq teoricamente ela inicializou, mas não teve valor, é como se fosse isso:
+var a;
+console.log(a);
+var a = 2;
+console.log(a);
+
+/\ ocorreu o içamento/elevação.
+
+-------------
+
+Função x Objeto ->
+console.log(typeof Object);
+console.log(typeof new Object); ( ou new Object(), neste caso eu pude omitir os parenteses. aqui to instanciando um objeto, vai mostrar do tipo 'object'.);
+
+const Cliente = function() {}
+console.log(typeof Cliente);
+console.log(typeof new Cliente);
+
+\/ /\ SÃO A MESMA COISA! Clazss és´oum atalho.
+class Produto {} // criei uma função/classe.
+console.log(typeof Produto);
+console.log(typeof new Produto);
+
+a forma de criar objeto em javascript é a partir de função, então posso ter uma função literal mas a partir dela posso ter um objeto. classe tem o mesmo objetivo de função aqui. uma instancia pode ser criada a partir de "new", no Java é melhor da class, cria a class/function e instancia objeto a partir dela.
+
+-------------
+
+Par Nome/Valor: 
+tá presente ate criando variavel, constante. é basicamente nome com valor, e assim vai.
+ex:
+const saudacao = 'Opa';
+
+function exec() 
+{
+    const saudacao = 'Opa';
+    return saudacao;
+}
+
+// /\ Não vai ter problema de valor, no caso, confusão entre nomes, pois cada variavel ta dentro de seu escopo, em contextos lexicos diferentes.
+
+const cliente = 
+{
+    nome: 'Pedro',
+    idade:32,
+    peso:90,
+    endereco: {
+        logradouro: 'Rua Muito Legal', // aqui tudo é do contexto do objeto endereço
+        numero: 123
+    }
+}
+
+console.log(saudacao);
+console.log(exec());
+console.log(cliente);
+
+----------
+
+Notação Ponto:
+
+console.log(Math.ceil(6.1)); // uma notação ponto
+
+const obj1 = {};
+obj1.nome = 'Bola'; // essa aq é a notação ponto
+// obj1['nome'] = 'Bola2; // tb existe isso, msm coisa do acima, mas não é tão interessante
+
+console.log(obj1.nome);
+
+function Obj(nome)
+{
+    this.nome = nome; // this.nome é o nome associado ao objeto dessa função, é o atributo publico
+    this.exec = function() {
+        console.log('Exec...');
+    }
+}
+
+const obj2 = new Obj('Cadeira'); // criando outro atributo que terá de valor a instanciação do objeto da função 'Obj', terá um objeto.
+const obj3 = new Obj('Mesa');
+
+console.log(obj2.nome);
+console.log(obj3.nome);
+obj3.exec();
+
+------------
+
+Atribuição:
+é com o =
+const a = 7; -> to fazendo atribuição.
+
+----------
+
+Operador destructuring: operador de desestruturação, ele tira da estrutura alguma coisa. ex: o array é uma estrutura, é como se tirasse um elemento do array.
+const pessoa =
+{
+    nome: 'Ana',
+    idade: 5,
+    endereco: {
+        logradouro: 'Rua ABC',
+        numero: 1000
+    }
+}
+/\ e se quisessemos, do objeto pessoa, extrair o elemento 'idade'?
+em vez de fazer pessoa.idade = 18, ou criar variavel tipo let nome = pessoa.nome; e assim vai.
+ms vms fazer com destructuring.
+
+pra fazer:
+
+const { nome, idade } = pessoa; // aqui, as chaves não representam um objeto, representam um operador de desestruturação. aqui, eu to dizendo: tire dentro do objeto pessoa o atributo nome e idade.
+console.log(nome, idade);
+
+- e se eu quiser mudar o nome de tal variavel? faço assim:
+const { nome: n, idade: i } = pessoa; // singifica q, extraia de um objeto (no caso, o objeto é = pessoa) o atributo nome e idade, e crie variaveis com nome 'n' e nome 'idade'.
+console.log(n, i); // agr, ao imprimir, vai dar Ana e 5
+
+E se eu quiser atributos 'logradouro' e 'numero'?
+const { endereco : { logradouro, numero, cep} } = pessoa; // nesse caso, ele não vai criar 'endereco', somente se fosse 'const { endereco } = ...', no caso, ele vai criar 'logradouro, numero e cep', acessando o atributo endereco, extraido do objeto pessoa.
+console.log(logradouro, numero, cep); // cep não foi definido, portanto é undefined.
+
+---------------
+
+destructuring 2: 
+ter um array de uma posiçao e extrair o valor do array de 1 posiçao:
+const [a] = [10]; // criou uma variavel a que recebeu o primeiro valor do array
+console.log(a); // irá imprimir '10'.
+
+const [n1, ,n3, ,n5, n6 = 0] = [10,7,9,8];
+console.log(n1, n3, n5, n6);
+ 
+/\ irá mostrar: '10 9 undefined 0', 10 = n1, n3 = 9, n5 = undefined pq já tá fora do array, e n6 era pra ser undefined, mas como recebeu = 0, veio '0'.
+
+array de array:
+const [, [, nota]] = [[, 8, 8], [9, 6, 8]]; // no const: o 1º elemento é o primeiro array [], eu ignorei-o, o 2 elemento é o 2 array [[]], dentro do 2 array, ignorando o primeiro e pegando o segundo, q é 'nota'. ai atribui, composto por 2 arrays, ignora o 1º arrayu (,8, 8). quero pegar o 2 elemento do array. o primeiro valor q ele pega é o '9', o segundo é o '6'.
+
+outro ex:
+let apresentacao = ["Olá", "eu" , "sou", "a", "Sarah"];
+let saudacao = apresentacao[0];
+let nome = apresentacao[4];
+
+console.log(saudacao);//"Olá"
+console.log(nome);//"Sarah"
+
+é melhor e mais simples fazer:
+let apresentacao = ["Olá", "eu" , "sou", "a", "Sarah"];
+let [saudacao, pronome] = apresentacao;
+
+console.log(saudacao);//"Olá"
+console.log(pronome);//"eu"
+
+ou então mais simples:
+let [saudacao, pronome] = ["Olá", "eu", "sou", "a", "Sarah"];
+
+console.log(saudacao);//"Olá"
+console.log(pronome);//"eu"
+
+- Pulando itens do array: (não muito usado)
+let [saudacao,,,,nome] = ["Olá", "eu" , "sou", "a", "Sarah"];
+
+console.log(saudacao);//"Olá"
+console.log(nome);//"Sarah"
+
+------------
+desestruturação parte 3:
+function rand({min = 0, max = 1000}) // aqui não significa q tenho um objeto, significa que vou passar um objeto para essa funçao, e dentro da minha função randomica, em vez de acessar rand.min e rand.max, já quero q ele tire dentro do objeto 'min' e 'max' prontos, sem ter q usar a notação ponto. Nesta linha, to uso o destructuring
+{
+    const valor = Math.random() * (max-min) + min;
+    return Math.floor(valor);
+}
+
+const obj = {max: 50, min: 40} // aqui to usando um objeto
+console.log(rand(obj)); // vai sempre mostrar entre 50 e 40
+posso fazer tb:
+console.log(rand({max:1000}));
+posso passar nada tbm:
+console.log(rand({})); // vai ficar navegando entre 0 e 1000
+
+-----------
+
+Usando o array dentro dos parametros de uma função:
+function rand ([min = 0, max = 1000]) // msm coisa da ultima vez, mas usando colchetes
+{
+    if (min > max) [min, max] = [max, min]; // é uma forma de inverter as variáveis. se 'min > max', oq é min vira max, oq é max vira min. aí estou criando o array [max, min]. uma vez q vc desestruturou, vc n recebe array, vc recebe 2 atritutos, min e max. 
+    const valor = Math.random() * (max - min) + min;
+    return Math.floor(valor);
+}
+
+console.log(rand[50,40]); // aq estou usando array, entao nao fica exatamente claro quem é o max e quem é o minimo
+posso tbm: 
+console.log(rand[992]); // assume primeiro o minimo, vai ser min = 992, e depois vai assumir o max como = 1000 por padrão
+console.log(rand[, 10]); // assume o minimo como 0, e max = 10.
+console.log(rand[]); // assume os valores padrões.
