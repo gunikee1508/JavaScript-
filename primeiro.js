@@ -61,3 +61,39 @@ function rand([min = 0, max = 1000]) // msm coisa da ultima vez, mas usando colc
 {
     if (min > max) [min, max] = [max, min]; // é uma forma de inverter as variáveis. se 'min > max', oq é min vira max, oq é max vira min. aí estou criando o array [max, min]. uma vez q vc desestruturou, vc n recebe array, vc recebe 2 atritutos, min e max. 
 }
+
+const resultado = nota => nota>= 7 ? "Aprovado" : "Reprovado"; // criei uma constante resultado q vai receber uma função arrow (nota). como a função 'nota' só vai ter um parametro, não precisa de parenteses ali na criação dela.
+console.log(resultado(5));
+console.log(resultado(8));
+
+function tratarErroELancar(erro)
+{
+    //throw new Error('Ocorreu um erro'); 
+    // throw 10 // posso fazer isso
+    // throw true // posso fazer isso tbm
+    // throw 'ERRO MENSAGEM' // posso fazer isso tb, posso tbm lançar um objeto:
+    throw {
+        nome: erro.name,
+        msg: erro.message,
+        date: new Date
+    }
+}
+
+function imprimirNomeGritado(obj) 
+{
+    try
+    {
+        console.log(obj.name.toUpperCase() + '!!!!');
+    }
+    catch(e)
+    {
+        tratarErroELancar(e); // vou passar o erro como parametro (e)
+    }
+    finally
+    {
+        console.log('final');
+    }
+    
+}
+const obj = { name: 'Roberto' }
+imprimirNomeGritado(obj);

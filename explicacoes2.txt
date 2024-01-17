@@ -463,3 +463,134 @@ posso tbm:
 console.log(rand[992]); // assume primeiro o minimo, vai ser min = 992, e depois vai assumir o max como = 1000 por padrão
 console.log(rand[, 10]); // assume o minimo como 0, e max = 10.
 console.log(rand[]); // assume os valores padrões.
+
+--------------
+
+Operadores relacionais:
+
+const d1 = new Date(0);
+const d2 = new Date(0);
+console.log('(09)', d1 === d2);
+console.log('10)', d1 == d2);
+console.log('11)', d1.getTime() === d2);
+
+console.log('12)', undefined == null); // aq vai dizer q é a mesma coisa
+console.log('12)', undefined === null); // mas já aqui, já não vai ser a mesma coisa
+
+=== é extritamente igual, 100% igual
+
+----------
+
+const resultado = nota => nota>= 7 ? "Aprovado" : "Reprovado"; // criei uma constante resultado q vai receber uma função arrow (nota). como a função 'nota' só vai ter um parametro, não precisa de parenteses ali na criação dela.
+console.log(resultado(5));
+console.log(resultado(8));
+
+--------
+
+Browser vs Node -> JavaScript
+já vimos o objeto que representa um escopo global, o 'window', ele tem uma quantidade gigantesca de propriedades
+qd vc coloca 'this' tb mostra 'Window', e se vc der:
+this === window
+vai dar 'true'. o 'this' pode até variar dependendo de quem chamou.
+
+Vejamos:
+var a = "Texto";
+window.a; // vai resultar em 'Texto'.
+se eu der:
+this.a; // tb mostra 'Texto'
+
+Agora, se eu criar a variável com 'let', não adianta colocar 'window.a'.
+let b = 123;
+window.b; // vai dar undefined pq a variável foi definida como 'let', essa variável não tá num contexto global, embora a variável seja global. agora, se declarar duas variáveis com escopo global com 'let', ela dará problema, isto é, declarar 2 vezes a variável com let.
+se vc chamar 'this.b' ela não será chamada tbm pq ela não tá em window, mas se vc colocar apenas 'b', ela vai estar lá.
+
+se eu der:
+const c = 12345;
+window.c; // dará undefined, pq ela não tem contexto global, assim como let, embora ela seja de acesso global, isto é, todo mundo tem acesso a variavel.
+evite variaveis compartilhadas de forma global, pois qq um pode mudar.
+
+se eu fizer, tb no console do browser:
+function f1() { return this === window }
+f1(); // vai dar true, uma vez que a funçao esta disponivel de forma global.
+se eu der:
+window.f1() ou this.f1(); // tb vai dar 'true', já q ta disponivel de forma global
+
+ou de forma arrow:
+const f2 = () => console.log(this === window);
+f2(); // aq vai dar true tbm da mesma maneira, mas...
+se eu der:
+this.f2(); ou window.f2(); // vai dar erro dizendo que ela não é uma função, ****pois constantes e variáveis definidas como LET não vão diretamente pro objeto global window, ficam na memoria do browser. ****
+
+---->>>  constantes e variáveis definidas como LET não vão diretamente pro objeto global window, ficam na memoria do browser.
+
+- Uma forma de fugir do escopo global é criando objetos:
+let pessoa = {nome: 'Ana', falar: function() { return `Eu sou ${this.nome}`}}; // esse nome não tá no escopo global, e sim no escopo do objeto 'pessoa', 'falar' recebe uma função anônima (sem nome) que retorna uma coisa, q tá em Template String (delimitado por crase) e dentro chamei uma expressão com o dolar. o 'this' neste caso, é o window? NÃO, nesse caso, 'this' é a propria pessoa, é Ana'.
+pessoa.falar(); // vai mostrar 'Eu sou Ana'
+
+// Isto é, se eu der agora: this.nome, vai dar undefined, pq não tá no escopo global, this === window, no caso 'nome' é do objeto pessoa, em vez de poluir o escopo global, to poluindo so o objeto 'pessoa'. tenho apenas um objeto que engloba todas essas funções
+
+Se eu fizer, agora no node:
+let a = 3;
+this.c = 456;
+console.log(this.a); // vai mostrar undefined
+console.log(global.a); // tb vai mostrar undefined, vai dar em nada. 'global' é o 'window' do browser
+console.log(this.c); // vai mostrar 456
+console.log(module.exports.c); // 'this' no caso é identico/exatamente igual ao 'this'.
+// no 'node', cada arquivo é um modulo, diferente da web, onde muitos arquivos varias vezes são unificados.
+
+// é mais comum ver codigos assim:
+module.exports = { e: 456, f: false, g: 'teste'}; // this é o module exports
+
+--------
+
+Tratamento de erro ( try / catch / throw ), como tratar e como lançar uma exceção
+function imprimirNomeGritado(obj) 
+{
+    console.log(obj.name.toUpperCase() + '!!!!');
+}
+const obj = { nome: 'Roberto' }
+imprimirNomeGritado(obj);
+/\ ao executar isso, dará erro, então a gente coloca um bloco de codigo chamado 'try', em q dentro dele vc coloca um tipo de codigo q vc acha q pode gerar um tipo de erro. junto ao try, vc coloca um 'catch()', q uma vez q gerou uma exceção, dentro do erro, ele cai dentro do 'catch'.
+
+vejamos o try e catch:
+function tratarErroELancar(erro)
+{
+    throw new Error('Ocorreu um erro'); 
+    // throw 10 // posso fazer isso
+    // throw true // posso fazer isso tbm
+    // throw 'ERRO MENSAGEM' // posso fazer isso tb, posso tbm lançar um objeto:
+    throw {
+        nome: erro.name,
+        msg: erro.message,
+        date: new Date
+    }
+}
+
+function imprimirNomeGritado(obj) 
+{
+    try
+    {
+        console.log(obj.name.toUpperCase() + '!!!!');
+    }
+    catch(e)
+    {
+        tratarErroELancar(e); // vou passar o erro como parametro (e)
+    }
+    
+}
+const obj = { nome: 'Roberto' }
+imprimirNomeGritado(obj);
+
+-- tem tbm o 'finally': ocorreu um erro no try, executa o catch e mesmo assim executa o finally, de qualquer forma chama o finally, mesmo que não tenha erro.
+    try
+    {
+        console.log(obj.name.toUpperCase() + '!!!!');
+    }
+    catch(e)
+    {
+        tratarErroELancar(e); // vou passar o erro como parametro (e)
+    }
+    finally
+    {
+        console.log('final');
+    }
