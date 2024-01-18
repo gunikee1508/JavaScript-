@@ -1,0 +1,202 @@
+function teste2(nota)
+{
+    if(nota > 7) // sim, isto é uma sentença de codigo
+        ;
+
+    {
+        console.log(nota);
+    }
+}
+
+// o ; ali é uma instrução vazia. então, console.log(nota) sempre será impresso, não tem condiçao pra isso.
+
+const imprimirResultado = function teste2(nota)
+{
+    if(nota >= 7)
+    {
+        console.log('Aprovado');
+    }
+    else
+    {
+        console.log('Reprovado');
+    }
+}
+
+imprimirResultado('Epa'); // vai ser false, vai imprimir 'reprovado', por falha do javascript, q é uma linguagem fracamente tipada
+
+Number.prototype.entre = function (inicio, fim)
+{
+    return this >= inicio&& this <= fim
+}
+
+const imprimirResultado = function (nota)
+{
+    if(nota.entre(9,10))
+    {
+        console.log('Quadro de Honra');
+    }
+    else if (nota.entre(7, 8.99))
+    {
+        console.log('Aprovado');
+    }
+    else if (nota.entre(4, 6.99))
+    {
+        console.log('Recuperação');
+    }
+    else if (nota.entre(70, 3.99))
+    {
+        console.log('Reprovado');
+    }
+}
+
+imprimirResultado(8.5);
+imprimirResultado(5);
+
+---
+com switch: melhor pra necessidades multiplas
+
+const imprimirResultado = function (nota)
+{
+    switch(Math.floor(nota)){
+        case 10:
+        case 9:
+            console.log('Quadro de Honra');
+        case 8: case 7:
+            console.log('Aprovado');
+        case 6: case 5: case 4:
+            console.log('Recuperação');
+        case 3: case 2: case 1:
+            console.log('Reprovado');
+        default:
+            console.log("Nota inválida");
+    }
+}
+
+imprimirResultado(4);
+
+
+////////// 
+
+- WHILE:
+
+function getInteiroAleatorioEntre(min, max)
+{
+    const valor = Math.random() * (max-min) + min
+    return Math.floor(valor);
+}
+
+let opcao = -1;
+
+// enquanto a expressão for verdadeira, continue executando o laço até q seja falso
+while (opcao != -1)
+{
+    opcao = getInteiroAleatorioEntre(-1, 10); // o valor tá sendo alterado pela função
+    console.log('A opção escolhida foi `${opcao}`');
+}
+
+// ele tá sempre sorteando, até q saia um -1.
+
+//////////////////////////////
+
+const notas = [6.5, 7.5, 9.0, 3.2, 4.1];
+
+for(let i = 0; i < notas.length; i++)
+{
+    console.log(`A nota agora é: ${notas[i]}`);
+}
+
+///////////////////
+
+FOR IN:
+const notas = [6.7, 7.4, 8.3, 7.7];
+
+// o FOR IN vai te dar os indices do elemento, como se fosse te dar os atributos de um array (ex.: o 1 elemento do array é 0, o 2 elemento do arary é 1). foreach é melhor.
+
+for (let i in notas) // para cada um dos elementos de notas vai te devolver um indice 'i'. bom usar 'let' para garantir que 'i' estará apenas naquele laço, isto é, variavel local daquele laço, presente apenas neste escopo.
+{
+    console.log(i, notas[i]); // vai mostrar os indices e o que há dentro de cada índice
+} 
+
+-- Outro exemplo:
+
+const pessoa = {
+    nome: 'Gustavo',
+    sobrenome: 'Marcon',
+    idade: 20,
+    peso: 60
+}
+
+for(let atributo in pessoa)
+{
+    console.log(`${atributo} : ${pessoaNova[atributo]}`);
+}
+
+///////////////
+
+Usando break e continue:
+
+const nums = [1,2,3,4,5,6,7,8,9,10];
+
+for (x in nums){
+    if (x==5) break;
+    console.log(`x = ${nums[x]}`);
+}
+
+for (y in nums)
+{
+    if (y==5) continue; // 'continue' simplesmente interrompe a repetição corrente e vai para a proxima repetição
+    console.log(`${y} = ${nums[y]}`);
+}
+
+// Agora com pares:
+externo: for (a in nums) // atr
+{
+    for(b in nums)
+    {
+        if(a == 2 && b == 3) break externo
+        console.log(`Par = ${a}, ${b}`);
+    }
+}
+
+/\ criei um rotulo chamado 'externo', e esse rotulo fica associado a um laço 'for'. dentro deste for, criei um outro for q teoricamente seria um for interno, onde 'a' sempre o indice de nums, e b sendo indice de nums também. se eu não tivesse colocado 'break externo', e sim apenas 'break', ele iria chamar apenas o break do for "interno" (q é o b in nums), pq é o laço mais proximo do break. se eu quiser criar um break mais externo, so a partir de um rotulo, por isso tenho o 'externo'.
+
+/\ Isso já nem é mais muito utilizado, melhor quebrar em métodos, foreach, etc.
+
+
+--------------
+
+Função:
+// Criar de forma literal
+function func1() { } // toda função retorna ao menos algum valor. se não definir o retorno, ele retorna ao menos undefined. o bloco em função é obrigatorio
+
+// Armazenar em uma variável:
+const fun2 = function () { }
+
+// Armazenar em um array:
+const array = [function (a,b) { return a + b }, fun1, fun2]; // posso armazenar criando uma funçao anonima direto, ou criar uma funçao armazenando em uma variavel e colocar esta variavel no array
+
+console.log(array[0](2,3)); // chamei ali o array de indice 0, q é uma funçao e, a essa funçao, passei os parametros '2' e '3'
+
+// Armazenando em um atributo de objeto:
+const obj = {}; // aqui criei um objeto, lembre-se, {} define objeto
+
+obj.falar = function () { return 'Opa' };
+
+console.log(obj.falar()); // tem q colocar os parenteses () para de fato invocar a função
+
+// Passar função como parametro para outra função:
+function run (fun) // criei uma função chamada run, recebe como parametro 'fun' ( espero receber como parametro uma função)
+{
+    fun(); // executando uma função, graças ao o que ta entre parenteses.
+}
+
+run(function () { console.log('Executando....') }); // chamei e passei como parametro uma função. aqui, não to executando uma função, apenas em fun(), dentro da função fun.
+
+// Além de conseguir passar como parametro, tbm é possivel retornar uma função como parametro.
+
+// Uma função pode retornar/conter uma/outra função
+function soma(a,b) {
+    return function(c) {
+        
+    }
+}

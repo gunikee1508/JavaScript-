@@ -266,6 +266,26 @@ funcs[8]();
 
 /\ irá mostrar '10' independente, justamente pq com 'var' não tem escopo de FUNÇÃO. agora, se eu definisse com 'let', iria mostrar '2' e '8'.
 
+// COM CHATGPT:
+
+// Aqui você cria uma lista chamada funcs
+const funcs = [];
+
+// Aqui você está fazendo um tipo de "contagem" de 0 a 9
+for (let j = 0; j < 10; j++) {
+    // Aqui você está adicionando uma função à lista funcs
+    funcs.push(function() {
+        // Esta função faz algo, que é imprimir o número que está sendo contado
+        console.log(j);
+    });
+}
+
+// Aqui você está chamando duas das funções que você adicionou à lista
+// funcs[2]() significa "chame a terceira função na lista"
+// funcs[8]() significa "chame a nona função na lista"
+funcs[2]();
+funcs[8]();
+
 -------------
 
 Hoisting :
@@ -337,7 +357,7 @@ console.log(Math.ceil(6.1)); // uma notação ponto
 
 const obj1 = {};
 obj1.nome = 'Bola'; // essa aq é a notação ponto
-// obj1['nome'] = 'Bola2; // tb existe isso, msm coisa do acima, mas não é tão interessante
+// obj1['nome'] = 'Bola2'; // tb existe isso, msm coisa do acima, mas não é tão interessante
 
 console.log(obj1.nome);
 
@@ -525,7 +545,7 @@ this.f2(); ou window.f2(); // vai dar erro dizendo que ela não é uma função,
 
 - Uma forma de fugir do escopo global é criando objetos:
 let pessoa = {nome: 'Ana', falar: function() { return `Eu sou ${this.nome}`}}; // esse nome não tá no escopo global, e sim no escopo do objeto 'pessoa', 'falar' recebe uma função anônima (sem nome) que retorna uma coisa, q tá em Template String (delimitado por crase) e dentro chamei uma expressão com o dolar. o 'this' neste caso, é o window? NÃO, nesse caso, 'this' é a propria pessoa, é Ana'.
-pessoa.falar(); // vai mostrar 'Eu sou Ana'
+console.log(pessoal.falar()); // vai mostrar 'Eu sou Ana'
 
 // Isto é, se eu der agora: this.nome, vai dar undefined, pq não tá no escopo global, this === window, no caso 'nome' é do objeto pessoa, em vez de poluir o escopo global, to poluindo so o objeto 'pessoa'. tenho apenas um objeto que engloba todas essas funções
 
