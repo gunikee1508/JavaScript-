@@ -117,6 +117,8 @@ for (let i in notas) // para cada um dos elementos de notas vai te devolver um i
     console.log(i, notas[i]); // vai mostrar os indices e o que há dentro de cada índice
 } 
 
+
+
 -- Outro exemplo:
 
 const pessoa = {
@@ -197,6 +199,129 @@ run(function () { console.log('Executando....') }); // chamei e passei como para
 // Uma função pode retornar/conter uma/outra função
 function soma(a,b) {
     return function(c) {
-        
+        console.log(a+b+c);
     }
 }
+
+soma(2,3)(4); // é uma forma de fazer chamando a função soma e depois já chamar diretamente a outra função. passei primeiro o parametro de 'soma' e depois o parametro da funçao q ta retornando a tal função. o resultado aí será 9.
+
+const cincoMais = soma(2,3); // mas tb posso armazenar o resultado dessa variável em uma constante/variável e depois usar essa constante/variável pra continuar a chamada da função
+cincoMais(4);
+
+////////////
+
+- Parâmetros e retorno são opcionais
+function area(largura, altura)
+{
+    const area = largura * altura;
+    if(area > 20)
+    {
+        console.log(`Valor acima do permitido: ${area}m2`);
+    }
+    else
+    {
+        return area
+    }
+}
+
+console.log(area(2,2)); // vai executar normalmente
+console.log(area(2)); // vai dar NaN, pq simplesmente não tem o 2 parametro.
+console.log(area()); // só dá NaN
+console.log(area(2,3,17,22,44)); // vai ler apenas os 2 primeiros e vai ignorar o resto 
+ 
+////////////////
+
+Parametros variáveis -
+function soma() // o fato de não receber nenhum parametro não significa que não se pode passar nenhum parametro, mas pode passar parametro sim, e dentro da função recuperar esses parametros a partir de uma propriedade chamada arguments
+{
+    let soma = 0;
+    for (i in arguments) // arguments é um array, e com 'i' vou pegar o indice de cada elemento do array. posso pegar cada um dos elementos e ir somando a variavel soma. arguments é o array interno de uma função que tem todos os argumentos q foram passados.
+    { 
+        soma += arguments[i];
+    }
+    return soma; // aq é o resultado de todas as somas q passei
+}
+console.log(soma()); // resulta '0', é a soma total
+console.log(soma(1)); // resulta em 1
+console.log(soma(1.1, 2.2, 3.3)); // resulta em 6.6, soma de tudo
+// ele não se limita apenas a numero, claro, se vc der:
+console.log(soma(1.1, 2.2, "testeeweee")); // vai resultar na soma de 1.1 com 2.2 e juntar com 'testeeweeee'
+
+// ---> tem outros operadores, como o rest, veremos pra frente
+
+-----------------
+
+parametro padrão-
+function soma1(a,b,c) // vc vai receber valor a, b e c de uma soma
+{
+    a = a || 1; // a vai receber 'a' se for true, se for false ele recebe '1'
+    b = b || 1; // a vai receber 'a' se for true, se for false ele recebe '1'
+    c = c || 1;
+    return a + b + c; // com ctz ele não vai ser um valor nulo ou undefined, pq se for false, recebe '1' como valor
+}
+console.log(soma1(), soma1(1,2,3), soma1(0,0,0)); // primeiro vai retornar '3' (pq é a soma de 1+1+1). depois, vai retornar 5. dps, mesmo passando '0,0,0', ele vai retornar '3', pq '0' é sempre false, então ele gera '1' [daí a soma de cada um pra dar 3].
+
+
+// outras estratégias pra gerar um valor padrão
+function soma2(a,b,c)
+{
+    a = a !== undefined ? a : 1; // 1º estratégia: a vai receber o seguinte: se a for diferente de undefined (se tiver algum valor), ela recebe o valor de 'a', q foi dado no parametro, senão, recebe como padrão o valor '1'.
+    b = 1 in arguments? b : 1; // 2º estrategia - dentro de 'arguments' existe o valor 1? se existir, b pega o valor de b, senão, pega o valor '1' como padrão. aqui é '1 in arguments' pq 'b' é de indice '1', se fosse 'a' seria '0 in arguments? [...]'
+    c = isNaN(c) ? 1 : c; // essa é a estrategia mais segura para valores numericos.
+    return a + b + c;
+}
+console.log(soma2(1,2,3)); // soma todos normalmente
+console.log(soma2()); // vai mostrar '3', pq recebeu valor padra
+console.log(soma2(1)); // vai mostrar '3', mas recebeu o primeiro parametro (a) mas caiu em true, b e c receberam 1 como valor padrão pq cairam em false
+console.log(soma2(5,6)); // vai mostrar '12', pq a e b tão em true, fizeram soma, mas c tá em false e caiu como valor padrão '1'.
+console.log(soma2(5,6,"Olá")); // mesma coisa do de cima.
+
+// MAS, tem a melhor forma como valor numerico:
+function soma3(a = 1, b = 1, c = 1)
+{
+    return a + b + c;
+}
+console.log(soma3(), soma3(3), soma3(1,2,3), soma3(0,0,0)); // vai sempre receber '1' como padrão caso não definido
+
+// o valor padrao acima de funçao é pra colocar em parametros de funçao, mas se tiver criado variavel dentro de funçao e quer ter um valor padrão, é mt usado o que foi colocado acima: "a = a || 1"
+
+//////////////
+
+'this' pode variar:
+
+this é sempre o objeto que está sendo referenciado naquele contexto de execuçao, q é o dono daquela funçao q ta sendo executado. dependendo, o this pode apontar para outra coisa.
+
+function f1() { console.log(this === window)}
+f1(); // vai mostrar true.
+
+// o this pode variar, ali de fato o this aponta pro objeto global q é o window, mas se eu chamar ela a partir de um click em qualquer elemento na pagina e mesmo a pagina vazia, ele vai disparar a chamada a função f1. quando eu disparar a função a partir do click do mouse, o 'this' no contexto já não será mais objeto global.
+vejamos este teste:
+document.getElementsByTagName('body')[0].onclick = f1; // chamei o primeiro elemento, q é [0], pois quando voce pega getelementsbytagname, mesmo q vc passe uma tag q tenha um elemento, no caso é esperado q tenha uma pagina com um unico body. no caso vai retornar array e vamos pegar o elemento de indice 0, no caso, o primeiro body de uma determinada página, mas é esperado q tenha apenas um body. ao dar enter, e ao clicar na pagina, verá tá chamando a função e AGORA, imprimindo 'false', pois 'this' varia de acordo com a forma como voce chama a função.
+
+// se eu repetir, criando uma função f2, mas agora, em vez de 'this === window' e sim 'this === document', vai dar false também.
+
+// AGORA.... SE EU GUARDAR DENTRO DE UMA CONSTANTE QUALQUER, CHAMADA 'BODY' (chamei disso)
+const body = document.getElementsByTagName('body')[0]
+
+// Agora, vou verificar se é igual ao body:
+function f2() { console.log(this === body) }
+
+document.getElementsByTagName('body')[0].onclick = f2;
+// clico na pagina agora, verá q vai dar 'true'. nesse caso, quem representa o this quando chamo f2, é o proprio elemento q to clicando.
+
+// mas, se eu chamar f2 diretamente, verá que não é o body que tá apontando pro this, e sim o objeto window, pois dará false();
+f2(); // dará false
+
+// com Função Arrow:
+const f3 = () => console.log(this === window);
+f3(); // dará true
+
+// um grande motivo de ter funçao arrow, é que o 'this' não varia. veja:
+f3(); // vai dar true
+// mas, se eu chamar a partir do clique:
+document.getElementsByTagName('body')[0].onclick = f3;
+// ao clicar na pagina, vai dar 'true' também.
+
+mas, ao ter funçao normal deu false... pq? pois qd vc tem funçao com a palavra function, o this pode variar de acordo com quem chamou a função. então, o this pode variar. o this representa window? depende de como chamou a funçao. representa o elemento q cliquei? depende de como vc chamou a função. MAS, se for definido como FUNÇÃO ARROW, ele não varia NUNCA.
+
+----> Se a função for definida como FUNÇÃO ARROW, o 'this' não varia NUNCA. com onclick é true, com window é true, etc.

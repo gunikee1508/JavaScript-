@@ -280,6 +280,7 @@ for (let j = 0; j < 10; j++) {
     });
 }
 
+
 // Aqui você está chamando duas das funções que você adicionou à lista
 // funcs[2]() significa "chame a terceira função na lista"
 // funcs[8]() significa "chame a nona função na lista"

@@ -293,3 +293,82 @@ const objNovo = {}; // aqui criei um objeto, lembre-se, {} define objeto
 objNovo.falar = function () { return 'Opa' };
 
 console.log(objNovo.falar()); // tem q colocar os parenteses () para de fato invocar a função
+
+function randTeste ({min = 0, max = 100})
+{
+    if(min > max) [min,max] = [max,min];
+    const valor = Math.random() * (max - min) + min;
+    return Math.floor(valor);
+}
+const objTeste = {max: 30, min: 50};
+console.log(randTeste(objTeste));
+
+const serHumano = {
+    nome: 'Luiz',
+    idade: 20,
+    endereco: {
+        rua: "Zeferino",
+        numero: 129
+    }
+}
+for (let i in serHumano)
+{
+    console.log(`${i}, ${serHumano[i]}`);
+}
+
+const numerosAleatorios = [3, 5.5, 8.5, 9.2];
+for (let i in numerosAleatorios)
+{
+    if(i == 2) continue;
+    console.log(`${i} = ${numerosAleatorios[i]}`);
+}
+
+/////////
+
+function novaFuncao1() { }
+function novaFuncao2() {}
+
+const funcArray = [function (a,b) { return a + b}, novaFuncao1, novaFuncao2];
+
+console.log(funcArray[1]());
+
+function somaNova(a,b) {
+    return function(c) {
+        console.log(a+b+c);
+    }
+}
+
+somaNova(2,3)(7); 
+
+const cincoMais = somaNova(2,3); 
+cincoMais(9);
+
+function area(largura, altura)
+{
+    const area = largura * altura;
+    if(area > 20)
+    {
+        console.log(`Valor acima do permitido: ${area}m2`);
+    }
+    else
+    {
+        return area
+    }
+}
+
+console.log(area(2,2)); // vai executar normalmente
+console.log(area(2, 0)); // 
+
+function soma2(a,b,c)
+{
+    a = a !== undefined ? a : 1; // 1º estratégia: a vai receber o seguinte: se a for diferente de undefined (se tiver algum valor), ela recebe o valor de 'a', q foi dado no parametro, senão, recebe como padrão o valor '1'.
+    b = 1 in arguments? b : 1; // 2º estrategia - dentro de 'arguments' existe o valor 1? se existir, b pega o valor de b, senão, pega o valor '1' como padrão. aqui é '1 in arguments' pq 'b' é de indice '1', se fosse 'a' seria '0 in arguments? [...]'
+    c = isNaN(c) ? 1 : c; // essa é a estrategia mais segura para valores numericos.
+    return a + b + c;
+}
+console.log(soma2(1,2,3));
+console.log(soma2());
+console.log(soma2(1));
+console.log(soma2(5,6));
+console.log(soma2(5,6,"Olá"));
+console.log(soma2(0,0,0));
