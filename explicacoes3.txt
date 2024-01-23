@@ -325,3 +325,238 @@ document.getElementsByTagName('body')[0].onclick = f3;
 mas, ao ter funçao normal deu false... pq? pois qd vc tem funçao com a palavra function, o this pode variar de acordo com quem chamou a função. então, o this pode variar. o this representa window? depende de como chamou a funçao. representa o elemento q cliquei? depende de como vc chamou a função. MAS, se for definido como FUNÇÃO ARROW, ele não varia NUNCA.
 
 ----> Se a função for definida como FUNÇÃO ARROW, o 'this' não varia NUNCA. com onclick é true, com window é true, etc.
+
+///////////////
+
+this e a função 'bind' 
+const pessoa = { 
+    saudacao: 'Olá, bom dia',
+    falar(){ // voce pode criar um metodo assim também, sem definir function etc
+        console.log(this.saudacao); // to acessando o objeto do qual é o dono dessa função, no caso aqui, é o objeto 'pessoa'. sem o 'this' nao vai dar certo.
+    }
+}
+
+pessoa.falar(); // vai mostrar 'Olá, bom dia'.
+
+// vou armazenar agora essa função 'falar' em uma variável, vai dar um conflito no caso
+const falar = pessoa.falar;
+falar(); // vai dar undefined, o fato de eu armazenar uma função numa variavel, nesse contexto não to chamando a função 'falar' a  partir do contexto 'pessoa'. 'falar' aqui tá dentro de outro contexto. há conflito entre paradigmas: funcional e OO
+
+// agora, veja:
+const falarDePessoa = pessoa.falar.bind(); // o bind voce passa um objeto que voce quer q seja resolvido o 'this'. quem é o this dentro da função 'falar'? o 'this' é a constante 'pessoa'.
+falarDePessoa(); // agora vai apontar para o objeto certo. no caso, o 'BIND' é responsavel por amarrar um objeto, pra ele ser o dono da execuçao do metodo. qd chamar a funçao, qd referenciar o this, o this será o objeto q voce passou pra funçao 'bind'
+
+// agora, veja
+function Pessoa()
+{
+    this.idade = 0; // no momento q eu instanciar essa funçao, criar um objeto a partir dessa funçao, vou ter o atributo idade para q eu possa manipular ele.
+    setInterval(function(){
+        this.idade++;
+        console.log(this.idade);
+    }, 1000); // essa função dispara outra funçao a partir de um determinado intervalo q vc passou. e voce pode inclusive passar dentro dos parametros, uma funçao anonima, q é oq fizemos. o 'setinterval', alem de receber uma funçao, ele tb recebe um intervalo q no caso colocamos '1000' (em ms). a cada 1000 milisegundos, tal funçao vai ser disparada. para q tudo funcione, vou instanciar um objeto de 'Pessoa'. nao se esqueça o 'this' pode variar e ele varia de acordo com quem ta invocando essa função. quem ta invocando a funçao nao sou eu, eu passei a funçao pro 'setInterval'
+}
+
+new Pessoa; // ao compilar, vai dar só 'NaN'. ai vc ve q o 'this.idade' não aponta pro objeto pessoa, pois quem ta disparando a chamada dessa funçao é um temporizador e nao o objeto Pessoa. pra resolver, faremos:
+
+function Pessoa()
+{
+    this.idade = 0; // no momento q eu instanciar essa funçao, criar um objeto a partir dessa funçao, vou ter o atributo idade para q eu possa manipular ele.
+    setInterval(function(){
+        this.idade++;
+        console.log(this.idade);
+    }.bind(this), 1000); // uma funçao pode chamar outras funçoes, chamamos 'bind' como notaçao ponto e, dentro, passamos 'this' pra amarrar o this do objeto a chamada da funçao.
+}
+
+// agora, faremos:
+function Pessoa()
+{
+    this.idade = 0; 
+    const self = this // self recebe a referência de 'this'. como essa linha ta sendo executado dentro do objeto 'Pessoa', significa que nessa linha 'This' é o objeto que eu quero realmente apontar, que é a instancia atual que foi criada lá embaixo com 'new Pessoa'. e com isso, posso substituir 'this' por 'self'. é uma forma de 'driblar' o fato de 'this' variar, criando uma constante e essa constante ficar dentro da funçao. no caso, o 'self' sempre vai apontar pra pessoa.
+    setInterval(function(){
+        self.idade++; // como ve, substituimos 'this' por 'self'
+        console.log(self.idade);
+    }/*.bind(this)*/, 1000); 
+}
+
+new Pessoa();
+
+// então, vemos q podemos usar o bind ou usar o 'self = this'.
+
+//////////
+
+Função arrow -> o 'this' não varia.
+
+let dobro = function(a)
+{
+    return 2 * a;
+}
+
+/\ reescrevendo em arrow:
+let dobro = (a) => 2 * a; 
+ou
+let dobro = a => { // posso tirar os parenteses de 'a' pq só tenho um parametro
+    return 2 * a;
+}
+
+console.log(dobro(Math.PI));
+
+ola = () => "Olá"; // funçao sem parametros
+console.log(ola);
+
+// posso tbm usar 'underline', q eu to passando na vdd um unico parametro, mas na hr de passar parametro, vc pode ignorar 
+ola = _ => 'Olá'
+console.log(ola());
+
+////////////
+
+o 'this' dentro da funçao arrow é um 'this' fixo, o fato de que a funçao for chamada de locais diferentes nao influencia no 'this'
+
+function Pessoa()
+{
+    this.idade = 0;
+    setInterval(() => {
+        this.idade++;
+        console.log(this.idade);
+    }, 1000) // dentro de setInterval, criei uma funçao arrow
+}
+
+new Pessoa(); // no caso, o 'this' dentro de uma funçao arrow, tá apontando pra 'pessoa', justamente pq o 'this' não varia pq é uma funçao arrow
+
+////////////////
+
+let comparaComThis = function (param){
+    console.log(this === param);
+}
+comparaComThis(global); // vai dar 'true', ta no contexto do node. no browser seria 'window'
+
+const objNew = {}
+comparaComThis = comparaComThis.bind(objNew); // agora botei 'bind', vejamos:
+comparaComThis(global); // vai dar 'false', por conta do 'bind'
+comparaComThis(objNew); // vai dar 'true', o this aponta pro objeto agora por causa do 'bind'
+
+let comparaComThisArrow = param => console.log(this === param); // o this continuará apontando pro global como uma funçao apontaria? verá que não, pois essa funçao foi definida dentro de um 'modulo' do node, e cada arquivo do node representa um modulo. ou seja, o dono dessa funçao seria o proprio modulo. e como referenciar o modulo atual? o 'Arrow' é mais previsivel, o this aponta pro objeto/modulo corrente.
+
+// seria assim entao:
+comparaComThisArrow(module.exports); vai dar true
+
+// this nao é o global em caso de funçao arrow, mas é o module.exports
+
+// e se eu usar 'bind' dentro de uma funçao arrow?
+comparaComThisArrow = comparaComThisArrow.bind(objNew);
+comparaComThisArrow(objNew); // o this continua apontando pro objeto no qual foi escrito, ele nao vai mudar, mesmo com bind.
+comparaComThisArrow(module.exports); // vai dar true.
+
+// Ou seja, o 'this' numa funçao arrow vai apontar pro this no qual a função foi escrita, mesmo com o bind nesse caso.
+
+
+/////////
+
+Funções anonimas -
+função sem nome:
+const soma = function (x,y) { // uma constante recebeu uma funçao anonima
+    return x + y;
+}
+
+
+const imprimirResultado = function (a,b, operacao = soma) { // 'operacao' vai assumir o valor default (soma)
+    console.log(operacao(a,b))
+}
+imprimirResultado(3,4); // 3 e 4 foi para 'x e y' da funçao soma. vai retornar '7'
+imprimirResultado(3,4, soma); // vai dar em nada, mas vai retornar 7 também.
+imprimirResultado(3,4, function(x, y) { 
+    return x - y
+}); // o terceiro parametro é uma funçao, passei uma funçao como parametro. vai dar como resultado '-1'
+imprimirResultado(3,4, (x,y) => x * y); // vai mostrar como resultado '12', passando como terceiro parametro uma arrow function
+
+// outro exemplo de funçao anonima é criar a funçao dentro de outro objeto
+const pessoa = {
+    falar: function() {
+        console.log('Bom dia');
+    }
+}
+pessoa.falar();
+
+// veja acima q na verdade coloquei uma funçao anonima no atributo 'falar' dentro do objeto 'passar'
+podemos deixar assim tbm, tirando o 'function':
+falar()
+{
+    console.log('Opa');
+}
+
+//////////
+
+Callback:
+significa 'chamar de volta'
+
+const fabricantes = ['Mercedes', 'Audi', 'BMW'];
+
+function imprimir(nome, indice)
+{
+    console.log(`${indice + 1}. ${nome}`);
+}
+
+// a ideia do callback é voce passar uma funçao para outra funçao e quando um determinado evento acontecer, essa funçao vai ser chamada de volta. callback pode ser chamada varias vezes se quiser.
+
+// forEach é uma funçao de fabricantes, e fabricantes é um array. pra cada elemento do array, quero que chame a funçao 'imprimir'. e o 'forEach' vai passar como parametro pra essa funçao o nome do elemento q ele ta percorrendo e, como 2 parametro, o indice.
+
+// pra cada elemento q ele encontrar dentro do array, ele vai chamar de volta pra cada elemento q for encontrado, e vai imprimir no console indice e nome
+fabricantes.forEach(imprimir);
+
+// eu poderia fazer:
+fabricantes.forEach(function(fabricante){
+    console.log(fabricante); // passei como parametro uma funçao q tem como parametro 'a'. quem é o valor de 'a' nessa funçao aqui? 
+})
+
+// tbm posso fazer com funçao arrow:
+fabricantes.forEach(fabricante => console.log(fabricante)) // é uma funçao 'fabricante' que retorna console.log
+
+// veja então que o callback é nada mais do que passar uma funçao e essa funçao ser chamada quando um evento acontecer. no caso acima, qual evento q aconteceu? o evento é o loop, quando encontra um novo elemento ele dispara um evento q é a funçao q vc chamou. p/ cada elemento ele chama um callback passando o nome e indice. vc passa a funçao e ela chama de volta. outro ex é com requisiçao ajax.
+
+/////////
+
+Funçoes callback #2
+const notas = [7.7, 6.5, 5.2, 8.0, 3.6, 7.1, 9.0];
+
+// e se eu gerasse outro array com somente as notas abaixo de 7? vejamos primeiro normal e depois com callback
+
+//Sem Callback
+let notasBaixas = [];
+for(let i in notas)
+{
+    if(notas[i] < 7)
+    {
+        notasBaixas.push(notas[i]);
+    }
+}
+
+console.log(notasBaixas);
+
+// com Callback:
+
+const notasBaixas2 = notas.filter(function (nota){
+    return nota < 7;
+}); // filter é uma função que vai filtrar os elementos de um array em cima de um determinado critério e vai retornar true ou false. se a funçao retornar true, significa que ela deve ser chamada no array q esta sendo gerado. se retornar false, ela não vai ser adicionada no array q é a resposta dessa funçao. quando eu chamo 'filter', o resultado da funçao 'notas' vai ser outro array (notasBaixas). o array original "notas" não altera, mas o array 'notasBaixas' sim vai ser alterado. passei uma funçao/callback que o resultado vai ser verdadeiro ou falso, essa funçao recebe como parametro uma nota. 'return nota < 7' vai ser true ou false. se nota < 7, é true, o elemento constará no array final (notasBaixas), senão, não vai adicionar.
+
+// /\ note acima que chamei apenas um callback, uma funçao q sera pra cada um dos elementos
+
+console.log(notasBaixas2);
+
+// Com função arrow:
+const notasBaixas3 = notas.filter(nota => nota < 7); // passei uma callback pra esse filter, q recebe como parametro o elemento atual nota e retorna true or false.
+console.log(notasBaixas3);
+
+// /\ posso colocar acima em uma constante
+const notasMenorQue7 = nota => nota < 7;
+const notasBaixas3 = notas.filter(notasMenorQue7);
+console.log(notasBaixas3);
+
+/////////////////
+
+Callback #3:
+// Exemplo de call back no browser
+document.getElementsByTagName('body')[0].onclick = function(e) {
+    console.log('O evento ocorreu');
+}
+// document é a referência dentro do browser q é disponivel globalmente que aponta para sua página. getlementsbytagname acessa os elementos a partir de uma tag. vai retornar vários elementos. a tag que eu quero é o 'body'. e a resposta dessa função é um array. então, pra acessar um elemento especificamente tenho q passar um indice do array. como só tem um body 99% das vezes nas páginas, usamos o array de indice [0]. associado a esse elemento coloco o 'onclick' e vou atribuir ao onclick uma callback para que sempre q o usuario clicar no body. onclick recebe uma funçao, essa funçao recebe como parametro um evento (e).
+
+// ao clicar, a funçao foi registrada, ao clicar, o evento ocorreu. ao clicar, a callback será chamada. ao dar F5, ele não tá mais registrado, tem q registrar novamente (document[....])
