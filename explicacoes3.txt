@@ -353,7 +353,7 @@ function Pessoa()
     setInterval(function(){
         this.idade++;
         console.log(this.idade);
-    }, 1000); // essa função dispara outra funçao a partir de um determinado intervalo q vc passou. e voce pode inclusive passar dentro dos parametros, uma funçao anonima, q é oq fizemos. o 'setinterval', alem de receber uma funçao, ele tb recebe um intervalo q no caso colocamos '1000' (em ms). a cada 1000 milisegundos, tal funçao vai ser disparada. para q tudo funcione, vou instanciar um objeto de 'Pessoa'. nao se esqueça o 'this' pode variar e ele varia de acordo com quem ta invocando essa função. quem ta invocando a funçao nao sou eu, eu passei a funçao pro 'setInterval'
+    }, 1000); // essa função dispara outra funçao a partir de um determinado intervalo q vc passou. e voce pode inclusive passar dentro dos parametros uma funçao anonima, q é oq fizemos. o 'setinterval', alem de receber uma funçao, ele tb recebe um intervalo q no caso colocamos '1000' (em ms). a cada 1000 milisegundos, tal funçao vai ser disparada. para q tudo funcione, vou instanciar um objeto de 'Pessoa'. nao se esqueça o 'this' pode variar e ele varia de acordo com quem ta invocando essa função. quem ta invocando a funçao nao sou eu, eu passei a funçao pro 'setInterval'
 }
 
 new Pessoa; // ao compilar, vai dar só 'NaN'. ai vc ve q o 'this.idade' não aponta pro objeto pessoa, pois quem ta disparando a chamada dessa funçao é um temporizador e nao o objeto Pessoa. pra resolver, faremos:
@@ -539,6 +539,7 @@ const notasBaixas2 = notas.filter(function (nota){
 
 // /\ note acima que chamei apenas um callback, uma funçao q sera pra cada um dos elementos
 
+
 console.log(notasBaixas2);
 
 // Com função arrow:
@@ -560,3 +561,255 @@ document.getElementsByTagName('body')[0].onclick = function(e) {
 // document é a referência dentro do browser q é disponivel globalmente que aponta para sua página. getlementsbytagname acessa os elementos a partir de uma tag. vai retornar vários elementos. a tag que eu quero é o 'body'. e a resposta dessa função é um array. então, pra acessar um elemento especificamente tenho q passar um indice do array. como só tem um body 99% das vezes nas páginas, usamos o array de indice [0]. associado a esse elemento coloco o 'onclick' e vou atribuir ao onclick uma callback para que sempre q o usuario clicar no body. onclick recebe uma funçao, essa funçao recebe como parametro um evento (e).
 
 // ao clicar, a funçao foi registrada, ao clicar, o evento ocorreu. ao clicar, a callback será chamada. ao dar F5, ele não tá mais registrado, tem q registrar novamente (document[....])
+
+////////////
+
+Funções construtoras:
+function Carro(velocidadeMaxima = 200, delta = 5)
+{
+    // atributo privado
+    let velocidadeAtual = 0; // atributo que pertence apenas ao escopo da função Carro. quando eu instanciar um objeto a partir dessa funçao, nao tem como acessar diretamente velocidadeAtual pq é um atributo interno da minha função.
+
+    // metodo publico
+    this.acelerar = function() { // essa funçao é responsavel por acrescentar a velocidade atual q é uma velocidade q tá visivel apenas naão
+        if(velocidadeAtual + delta <= velocidadeMaxima)
+        {
+            velocidadeAtual += delta;
+        }
+        else{
+            velocidadeAtual = velocidadeMaxima;
+        }
+    }
+
+    // método público
+    this.getVelocidadeAtual = function() {
+        return velocidadeAtual;
+    }// método responsável por pegar a velocidade atual. eu poderia deixar 'velocidadeAtual' aberta, mas ai o usuário pegaria um valor maior q 
+    a velocidade maxima e voce nao teria controle dessa variavel. entao vc pode permitir acesso a variável através de uma funçaõ com getVelocidadeAtual e vc retorna o valor da velocidade atual q é um atributo privado (atributo privado cria-se com let, var ou const).  
+}
+
+const uno = new Carro(); // instanciando um objeto
+uno.acelerar();
+console.log(uno.getVelocidadeAtual());
+
+// se quiser que algo seja publico, pra ser visivel fora da funçao construtora, vc usa o 'this'.
+
+const ferrari = new Carro(350, 20);
+ferrari.acelerar();
+console.log(ferrari.getVelocidadeAtual());
+
+//////////////////////
+
+Tipos de declaração de função -
+
+// function declaration
+function soma (x,y) // a vantagem de usar esse tipo de declaraçao, é q posso chamar ela antes de ela ser declarada.
+{
+    return x + y;
+}
+
+// function expression
+const sub = function (x,y)
+{
+    return x - y;
+}
+
+// named function expression
+const mult = function mult(x,y){ // mais util somente para debugar
+    return x * y;
+}
+
+//////////
+
+Contexto léxico -
+// contexto no qual as coisas são declaradas dentro da linguagem
+
+const valor = 'Global';
+
+function minhaFuncao()
+{
+    console.log(valor);
+}
+
+function exec(){
+    const valor = 'Local';
+    minhaFuncao(); // ao chamar essa funçao aq, vai mostrar 'Global' ou 'Local'? Dentro do contexto lexico, vai mostrar 'Global', pq? a funçao carrega consigo o contexto lexico, ela vai procurar dentro do contexto lexico na qual foi definida, por isso mostra 'Global'
+}
+
+exec();
+
+///////////////////
+
+// Closure
+Closure é o escopo criado quando uma função é declarada.
+// Esse escopo permite a função acessar e manipular variáveis externas à função
+
+const x = 'Global';
+
+function fora() {
+    const x = 'Local';
+    function dentro() {
+        return x;
+    }
+    return dentro;
+}
+const minhaFuncao = fora();
+console.log(minhaFuncao()); // qual valor de 'x' q ela retorna? o valor de 'x' global ou o valor de 'x' local? por conta de uma funçao em javascript ser um closure, ele terá ciencia de onde foi definida e acessará a variavel 'x' local e nao a global.
+
+///////////
+
+Funções Factory - é uma função que retorna um objeto
+
+// Imaginemos
+
+const prod1 = {
+    nome: '...', // nome do produto
+    preco: 45
+}
+
+const prod2 = { // outro produto exatamente igual ao prod1
+    nome: '....',
+    preco: 1234
+}
+
+// se voce for fazendo esse processo muitas vezes, voce repete demais o conteudo de um determinado objeto no programa
+
+// Factory Simples:
+function criarPessoa(){
+    return{ // dentro da função to retornando um objeto
+        nome: 'Ana',
+        sobrenome: 'Silva'
+    }
+}
+
+// factory entao é uma funçao que sempre retorna um objeto, embora aqui nao tenha o operador 'new', o fato de estar criando um objeto a partir da notaçao literal de objeto ( { } ), voce ta sempre criando uma nova instancia de pessoa. pode simplesmente criar um objeto a partir da chamada da funçao. 
+
+console.log(criarPessoa()); // portanto, tenho aqui a criaçao de uma pessoa a partir de uma factory. por isso o nome 'factory', que ela tem a funçao de fabricar a instancia de um objeto
+
+////////////
+
+Factory #2 :
+
+function criarProduto(nomeProduto, precoProduto)
+{
+    return{
+        nomeProduto,
+        precoProduto,
+        desconto: 0.1
+    }
+}
+
+console.log(criarProduto('Notebook', 2199.49));
+console.log(criarProduto('iPad', 1199.49));
+
+// /\ funçao factory exemplo, so que com o desconto de 10% fixo como padrão. nao precisei coloquei nome:nomeProduto, pois é o nome que eu quis. 
+
+///////////
+
+Classe x Funçao Factory:
+class Pessoa {
+    constructor(nome) { // aqui tenho o construtor dessa classe para inicializar variaveis que porventura passemos na hora da construção
+        this.nome = nome; // assim que coloquei aqui this.nome , significa que essa variavel 'nome' passou a ser publica, entao vou poder ter acesso a ela sempre q eu quiser a partir da instancia dessa classe.
+    }
+
+    falar() {
+        console.log(`Meu nome é ${this.nome}`);
+    }
+}
+
+const p1 = new Pessoa('João'); // passei aqui string, q foi passada pro construtor
+p1.falar();
+
+// vai mostrar o esperado, meu nome é joão
+
+const pessoa = nome => {
+    return {
+        falar: () => console.log(`Meu nome é ${nome}`); // com Factory aqui, eu nao preciso usar o 'this', pq ele tem consciencia do contexto lexico no qual foi declarado.
+    }
+}
+
+const p2 = pessoa('João');
+p2.falar();
+
+///////////
+
+Transformar este codigo em uma função construtora:
+class Pessoa {
+    constructor(nome) { // aqui tenho o construtor dessa classe para inicializar variaveis que porventura passemos na hora da construção
+        this.nome = nome; // assim que coloquei aqui this.nome , significa que essa variavel 'nome' passou a ser publica, entao vou poder ter acesso a ela sempre q eu quiser a partir da instancia dessa classe.
+    }
+
+    falar() {
+        console.log(`Meu nome é ${this.nome}`);
+    }
+}
+
+---------
+
+// os parametros do construtor vao passar a ser parametro dessa funçao a ser criada. o que voce fez dentro do 'constructor', agora, vc faz dentro direto da sua funçao construtora
+
+function Pessoa(nome) {
+
+    this.nome = nome; 
+
+    this.falar = function() { // e para transformar essa funçao pra ficar diretamente no objeto, fiz assim 'this.falar = function()'
+        console.log(`Meu nome é ${this.nome}`);
+    }
+}
+
+const p1 = new Pessoa('João');
+p1.falar(); // aqui a instanciação é a mesma
+
+// entao posso criar objeto a partir de uma funçao construtora, de uma classe e criar objeto a partir de uma factory
+
+///////////
+
+IIFE - Função auto invocada, na declaraçao da funçao ja invoca a execuçao da função. ideal pra fugir do escopo global. tudo que voce criar na função será escopo local da função e não escopo global da função. evita manipular algo no escopo global. aqui, voce foge do escopo global, criando função autoinvocada.
+
+(function(){ // criei uma funçao anonima
+    console.log("Será executado na hora");
+    console.log("Foge do escopo mais abrangente!");
+})() // pra finalizar, no final, preciso chamar ele com os ()
+
+
+//////////
+
+Call & Apply -
+
+function getPreco(imposto = 0, moeda = 'R$')
+{
+    return `${moeda} ${this.preco * (1 - this.desc) * (1 + imposto)}`;
+}
+
+const produto = {
+    nome: 'notebook',
+    preco: 4589,
+    desc: 0.15,
+    getPreco // como ja tenho uma funçao com esse nome, ao criar um atributo assim com esse nome ele ja vai associar automaticamente a funçao
+}
+
+// se eu fizesse assim:
+// global.preco = 18;
+// global.desc = 2; 
+// funcionaria, pq teria definido globalmente
+console.log(getPreco()); // vai dar NaN pq simplesmente nao defini preco e desconto, a nao ser se eu fizesse o que fiz acima, declarando como 'global.preco = 18 e global.desc = 2'
+console.log(produto.getPreco()); // outra forma: agora funciona normalmente, pq chamei 'getpreco' a partir de um objeto
+
+// outra forma é a partir do call e apply:
+
+const carro = { preco: 49990, desc: 0.20}; // criei outro objeto
+// a partir desse objeto, vou chamar getPreco
+console.log(getPreco.call(carro)); // passei como contexto o objeto carro pro valor da execução
+console.log(getPreco.apply(carro)); 
+
+// qual a diferença de call e apply? é a chamada nos parametros.
+com call, eu passo diretamente eu passo os parametros cada um dos parametros que serao passado da funçao. o 1 parametro sempre é o contexto.
+ex:
+console.log(getPreco.call(carro, 0.17, '$'));
+
+// com apply, vou passar os parametros dentro de um array
+console.log(getPreco.apply(carro, [0.17, '$']));
+
+o contexto poderia ser 'global' tb, ai usaria o global que passamos lá em cima:
+console.log(getPreco.apply(global, [0.17, '$']));
+console.log(getPreco.call(global, 0.17, '$'));

@@ -470,6 +470,144 @@ console.log(notasBaixas2);
 const notasBaixas3 = notas.filter(nota => nota < 7); // passei uma callback pra esse filter, q recebe como parametro o elemento atual nota e retorna true or false.
 console.log(notasBaixas3);
 
+/*
 document.getElementsByTagName('body')[0].onclick = function(e){
     console.log('O evento ocorreu');
-} // document é a referência dentro do browser q é disponivel globalmente que aponta para sua página. getlementsbytagname acessa os elementos a partir de uma tag. vai retornar vários elementos. a tag que eu quero é o 'body'. e a resposta dessa função é um array. então, pra acessar um elemento especificamente tenho q passar um indice do array. como só tem um body 99% das vezes nas páginas, usamos o array [0]
+} */
+
+function Carro(velocidadeMaxima = 200, delta = 5)
+{
+    // atributo privado
+    let velocidadeAtual = 0; // atributo que pertence apenas ao escopo da função Carro. quando eu instanciar um objeto a partir dessa funçao, nao tem como acessar diretamente velocidadeAtual pq é um atributo interno da minha função.
+
+    // metodo publico
+    this.acelerar = function() { // essa funçao é responsavel por acrescentar a velocidade atual q é uma velocidade q tá visivel apenas naão
+        if(velocidadeAtual + delta <= velocidadeMaxima)
+        {
+            velocidadeAtual += delta;
+        }
+        else{
+            velocidadeAtual = velocidadeMaxima;
+        }
+    }
+
+    // método público
+    this.getVelocidadeAtual = function() {
+        return velocidadeAtual;
+    }
+}
+
+const uno = new Carro();
+uno.acelerar();
+console.log(uno.getVelocidadeAtual());
+
+const ferrari = new Carro(350, 20);
+ferrari.acelerar();
+ferrari.acelerar();
+ferrari.acelerar();
+console.log(ferrari.getVelocidadeAtual());
+
+
+const xNovo = 'Global';
+
+function fora() {
+    const xNovo = 'Local';
+    function dentro() {
+        return xNovo;
+    }
+    return dentro;
+}
+const minhaFuncao = fora();
+console.log(minhaFuncao());
+
+function criarProduto(nomeProduto, precoProduto)
+{
+    return{
+        nomeProduto,
+        precoProduto,
+        desconto: 0.1
+    }
+}
+
+console.log(criarProduto('Notebook', 2199.49));
+console.log(criarProduto('iPad', 1199.49));
+
+const pessoaPah = nomePa => {
+    return
+}
+
+function getPreco(imposto = 0, moeda = 'R$')
+{
+    return `${moeda} ${this.preco * (1 - this.desc) * (1 + imposto)}`;
+}
+
+const produto = {
+    nome: 'notebook',
+    preco: 4589,
+    desc: 0.15,
+    getPreco // como ja tenho uma funçao com esse nome, ao criar um atributo assim com esse nome ele ja vai associar automaticamente a funçao getPreco
+}
+global.preco = 50;
+global.desc = 0.15;
+console.log(produto.getPreco());
+
+////////////////
+
+/*
+const somaValores = (valorUm, valorDois) => valorUm + valorDois;
+console.log(somaValores(5,8));
+*/
+
+
+// Exercicios JavaScript Leitão -
+
+// 1)
+const calculadoraDeValores = (valorUm, valorDois) => {
+    console.log(`A soma dos valores é de ${valorUm + valorDois}`);
+    console.log(`A subtração de valores é de: ${valorUm - valorDois}`);
+    console.log(`A multiplicação dos valores é de: ${valorUm * valorDois}`);
+    console.log(`A divisão dos valores é de: ${valorUm / valorDois}`);
+} 
+
+calculadoraDeValores(10,5);
+
+////////////////////
+
+// 2)
+const ladosDoTriangulo = (x, y, z) => {
+    return (x == y) && (y == z) ? "Triângulo Equilátero" : (x == y) || (y == z) ? "Triângulo Isósceles" : "Triângulo Escaleno";
+}
+
+console.log(ladosDoTriangulo(3,3,3));
+
+
+//////////////
+
+// 3) 
+const baseElevadaAoExpoente = (base, expoente) => 
+{
+    return Math.pow(base, expoente);
+}
+
+console.log(baseElevadaAoExpoente(2,5));
+
+////////////
+
+// 4)
+const divisaoDeValores = (dividendo, divisor) => {
+    console.log(`A divisão dos números é: ${dividendo/divisor}, e o resto é de: ${dividendo%divisor}`);
+}
+
+divisaoDeValores(9,2);
+
+//////////
+
+// 5)
+const flutuanteCorrigido = (numero) => numero = Number(numero.toFixed(2));
+console.log(flutuanteCorrigido(0.1 + 0.2));
+
+// 10)
+const divisivelPorTres = (numero) => numero % 3 == 0 ? Boolean(true) : Boolean(false);
+console.log(divisivelPorTres(7));
+ 
+// 11)
