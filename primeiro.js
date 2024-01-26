@@ -611,3 +611,187 @@ const divisivelPorTres = (numero) => numero % 3 == 0 ? Boolean(true) : Boolean(f
 console.log(divisivelPorTres(7));
  
 // 11)
+const anoBissexto = (ano) => ((ano % 400 == 0) && (ano % 4 == 0) && (ano % 100 == 0)) || (ano % 100 != 0 && ano % 4 == 0) ?  "Ano Bissexto" : "Ano não é bissexto";
+console.log(anoBissexto(2000));
+console.log(`${2000%100}`);
+
+// 13)  
+
+function diaDaSemana(diaDaSemanaNum)
+{
+    switch (diaDaSemanaNum)
+    {
+        case 1:
+            console.log("É domingo.");
+            break;
+        case 2:
+            console.log("É segunda.");
+            break;
+        case 3:
+            console.log("É terça");
+            break;
+        case 4:
+            console.log("É quarta");
+            break;
+        case 5:
+            console.log("É quinta");
+            break;
+        case 6:
+            console.log("É sexta");
+            break;
+        case 7:
+            console.log("É sábado");
+            break;
+        default:
+            console.log("Errooor 404");
+    }
+}
+diaDaSemana(3);
+
+function CarroNovo(modeloDoCarro)
+{
+    switch(modeloDoCarro)
+    {
+        case "hatch":
+        return "Compra efetuada com sucesso";
+    
+        case "sedan":
+        case "motocicleta":
+        case "caminhonete":
+            return "Tem certeza que não prefere este modelo?";
+
+        default:
+            return "Não trabalhamos com este tipo de automóvel aqui";
+    }
+}
+
+console.log(CarroNovo("motocicleta"));
+
+/////////
+// 16)
+function calculadoraBasica(numeroUm, numeroDois, operacao)
+{
+    switch(operacao)
+    {
+        case "+":
+            return numeroUm + numeroDois;
+        case "-":
+            return numeroUm - numeroDois;
+        case "*":
+            return numeroUm * numeroDois;
+        case "/":
+            return numeroUm / numeroDois;
+        default: 
+            return "Operações inválidas";
+    }
+}
+console.log(calculadoraBasica(5,7, "-"));
+
+// 17)
+function aumentoDeSalario(salarioAtual, planoDeTrabalho)
+{
+    switch(planoDeTrabalho){
+        case "A":
+            return console.log(`Seu novo salário é de ${salarioAtual*1.10}`);
+        case "B":
+            return console.log(`Seu novo salário é de ${salarioAtual*1.15}`);
+        case "C":
+            return console.log(`Seu novo salário é de ${salarioAtual*1.20}`);
+    }
+}
+aumentoDeSalario(5000, "A");
+
+const produtoNovo = new Object // Object é uma funçao, instanciei um objeto aqui.
+produto.nome = 'Cadeira';
+produto['marca do produto'] = 'Genérica';
+produto.preco = 220;
+console.log(produto);
+
+const carro = { // esses valores podem ser outros objetos, array, etc. ali tem o valor proprietario sendo outro objeto, q proprietario tem outro objeto (endereço).
+    modelo: 'A4',
+    valor: 89000,
+    proprietario: {
+        nome: 'Raul',
+        idade: 56,
+        endereco: {
+            logradouro: 'Rua ABC',
+            numero: 123
+        }
+    },
+    condutores: [{
+        nome: 'Junior',
+        idade: 42
+    }, {
+        nome: 'Ana',
+        idade: 32
+    },
+]
+}
+
+function Produto(nome, preco, desc){
+    this.nome = nome; 
+    this.getPrecoComDesconto = () => {
+        return preco * (1 - desc);
+    }
+}
+
+const p1 = new Produto('Caneta', 7.99, 0.15);
+const p2 = new Produto('Notebook', 2998.99, 0.25);
+console.log(p1.getPrecoComDesconto(),`,`, p2.getPrecoComDesconto());
+
+function criarFuncionario(nome, salarioBase, faltas){
+    return {
+        nome,
+        salarioBase,
+        faltas,
+        getSalario(){ // vai calcular o salario baseado nas faltas que o funcionario ter
+            return (salarioBase / 30) * (30 - faltas);
+        }
+    }
+}
+
+const f1 = criarFuncionario('João', 7980, 4);
+const f2 = criarFuncionario('Maria', 11400, 1);
+const f3 = new criarFuncionario('Luiz', 5000, 2);
+console.log(f1.getSalario(), f2.getSalario(), f3.getSalario());
+
+const fromJSON = JSON.parse('{"info": "Sou um JSON"}');
+console.log(fromJSON.info);
+
+const pessoaConstante = Object.freeze({nome: 'João'});
+
+console.log(pessoaConstante);
+
+_valor = 1; // usar _ antes do nome da variavel é uma convenção do javascript para dizer q o atributo é pretendido a ser privado
+
+const sequencia = {
+    _valor: 1,
+    get valor() { return this._valor++},
+    set valor(valor){
+        if(valor > this._valor)
+        {
+            this._valor = valor;
+        }
+    }
+}
+
+console.log(sequencia.valor, sequencia.valor); // embora eu esteja, teoricamente, acessando um atributo, ele ta, na vdd, acessando o metodo get e o metodo set
+sequencia.valor = 1000;
+console.log(sequencia.valor, sequencia.valor); // mostru 1000 e 1001, metodo get e metodo set
+sequencia.valor = 900;
+console.log(sequencia.valor, sequencia.valor); // vai mostrar 1002 e 1003, pois o valor q voce ta setando é menor que o valor que já tem no get (1001 agora, pq era 1000 q setei e +1 pq executei), então ele vai simplesmente ignorar
+
+const newPessoa = {
+    nome: 'Rebeca',
+    idade: 2,
+    peso: 13
+}
+
+console.log(Object.keys(newPessoa)); // object.keys pega todas as chaves de um objeto, no caso, newPessoa. vai mostrar: 'nome idade, peso'.
+console.log(Object.values(newPessoa)); // peguei uma lista dos valores de 'newPessoa', no caso, mostra 'Rebeca, 2, 13'
+console.log(Object.entries(newPessoa)); // vai me dar um array com todos os subarrays que vai ter a chave e o valor, no caso, me retorna: [ ['nome', 'Rebeca'], ['idade', 2], ['peso', 13] ]
+
+
+Object.entries(newPessoa).forEach(([chave, valor]) => {
+    console.log(`${chave}, ${valor}`)
+})

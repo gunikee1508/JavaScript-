@@ -813,3 +813,231 @@ console.log(getPreco.apply(carro, [0.17, '$']));
 o contexto poderia ser 'global' tb, ai usaria o global que passamos lá em cima:
 console.log(getPreco.apply(global, [0.17, '$']));
 console.log(getPreco.call(global, 0.17, '$'));
+
+///////////////////
+
+OBJETOS OO-
+
+// Linguagem procedural
+processamento(valor1, valor2, valor3); // voce tem dado e manipula o dado. 
+
+aqui voce tem dados e dentro desses dados voce tem funçao
+objeto é a figura central. as figuras que geram objetos podem ser classes, funções, etc.
+
+objeto = {
+    valor1,
+    valor2,
+    valor3,
+    processamento(){
+
+    }
+}
+
+// na OO voce tem dados, e dentro dos dados voce tem as funções. e voce passa a invocar esses processamentos a partir do dado. o objeto funciona como capsula que agrpa comportamentos e atributos. objeto tem herança, etc.
+
+objeto.processamento();
+
+
+// Principios importantes:
+// 1. abstração - pegar objeto do mundo real e como traduzir esse objeto pra dentro do sistema.
+por ex: objeto: carro. carro tem atributos peso, largura, altura, velocidadeMax, velocidadeAtual, tem metodo de ligar, desligar, gerarSom, etc.
+mas por ex, se vc fosse funcionario do detran, nao faria sentido criar o método acelerar dentro da função de carro se tivesse q criar um sistema pro detran 
+
+// 2 encapsulamento - ter os detalhes de implementaçao escondidos e mostrar a interface escondida pra que possa interagir com o objeto.
+quando voce muda a implementaçao interna, nao necessariamente quem usa aquela implementaçao precisa se adaptar, só é necessario mudar a interface pra todo mundo se adaptar.
+
+alto acoplamento = muitos objetos que tem tudo deles dentro exposto, há muita dependencia entre eles.
+é mais importante se preocupar com a comunicaçao dos objetos do que com a implementação.
+
+// 3 herança (prototype) -> [...] É UM [...]
+voce herda atributos e comportamentos de uma herança pai.
+priorize a composiçao em vez de herança.
+
+// 4 polimorfismo -> multipla formas
+
+////////////
+
+
+// objeto é coleçao dinamica de pares chave/valor
+const produto = new Object // Object é uma funçao, instanciei um objeto aqui.
+produto.nome = 'Cadeira';
+produto['marca do produto'] = 'Genérica';
+produto.preco = 220;
+console.log(produto); // vai mostrar nome, marca e preço.
+
+
+// excluindo atributos de um objeto:
+delete produto.preco;
+delete produto['marca do produto'];
+
+// agora, ao dar console.log(produto), mostraria apenas 'nome'.
+
+const carro = { // esses valores podem ser outros objetos, array, etc. ali tem o valor proprietario sendo outro objeto, q proprietario tem outro objeto (endereço).
+    modelo = 'A4',
+    valor: 89000,
+    proprietario: {
+        nome: 'Raul',
+        idade: 56,
+        endereco: {
+            logradouro: 'Rua ABC',
+            numero: 123
+        }
+    },
+    condutores: [{
+        nome: 'Junior',
+        idade: 42
+    }, {
+        nome: 'Ana',
+        idade: 32
+    },
+], // temos aqui atributos que é um array, q tem conjunto de objetos
+calcularValorSeguro: function() {
+    // ...
+} // aqui tenho uma funçao dentro do objeto
+}
+
+carro.proprietario.endereco.numero = 1000; // posso acessar os atributos a partir da notação ponto
+carro['proprietario']['endereco']['logradouro'] = "Av. Paulista"; // posso acessar atributo tb a partir de colchetes
+console.log(carro);
+
+delete carro.condutores; // tudo q tiver dentro de condutores será excluindo
+delete carro.proprietario.endereco;
+delete carro.calcularValorSeguro; 
+
+///////////
+
+Criaçao de objetos -
+// usando notaçao literal
+const obj1 = {}
+console.log(obj1);
+
+// object em JS
+console.log(typeof Object, typeof new Object());
+ou
+const obj = new Object
+console.log(obj2);
+
+// Funções construtoras
+function Produto(nome, preco, desc){
+    this.nome = nome; // aqui eu quis tornar essa variável pública, ela nao ta encapsulada/escondida dentro do objeto, isto é, visivel para fora do objeto. aqui significa que ele pertence a instancia, pq to acessando com 'this'. quando eu criar uma nova instancia de produto, o nome que voce passou estará visivel nessa instancia que será criada
+    this.getPrecoComDesconto = () => {
+        return preco * (1 - desc);
+    } // aqui tenho um metodo que será público tbm. este metodo pertence a instancia que for criada tbm, estará visivel quando instanciar um objeto a partir deste método
+}
+
+const p1 = new Produto('Caneta', 7.99, 0.15);
+const p2 = new Produto('Notebook', 2998.99, 0.25);
+console.log(p1.getPrecoComDesconto(), p2.getPrecoComDesconto());
+
+// Função Factory
+function criarFuncionario(nome, salarioBase, faltas){
+    return {
+        nome,
+        salarioBase,
+        faltas,
+        getSalario(){ // vai calcular o salario baseado nas faltas que o funcionario ter
+            return (salarioBase / 30) * (30 - faltas);
+        }
+    }
+}
+
+const f1 = criarFuncionario('João', 7980, 4);
+const f2 = criarFuncionario('Maria', 11400, 1);
+console.log(f1.getSalario(), f2.getSalario());
+
+// Object.create é outra forma de criar objeto
+const filha = Object.create(null); // Quando null é passado como argumento para Object.create, isso significa que o novo objeto não terá nenhum prototype. Isso resulta em um objeto que não herda propriedades ou métodos de nenhum outro objeto.
+filha.nome = 'Ana';
+console.log(filha);
+
+// Criando objeto com JSON.parse
+const fromJSON = JSON.parse('{"info": "Sou um JSON"}'); // ele converteu essa string JSON que está em em aspas simples em uma objeto javascript. 
+console.log(fromJSON.info); // posso acessar como objeto. 
+
+//////////////
+
+Objetos Constantes - 
+const pessoa = { nome: João };
+pessoa.nome = 'Pedro';
+console.log(pessoa); // funciona normalmente, embora seja constante, a referencia é ao 'nome'
+
+// agora, pra eu não mexer mais em um Objeto, como eu faria?
+Object.freeze(pessoa); // quando dá 'Object.freeze', não poderá mais usar nada do Object, nem adicionar, nem mudar, nem remover, nem nada.
+pessoa.nome = 'Maria';
+pessoa.end = 'Rua ABC';
+delete pessoa.nome; // também não irá funcionar.
+console.log(pessoa.nome); // isso não irá gerar um erro, mas 'pessoa.nome' continuará sendo 'Pedro'. 
+console.log(pessoa); // não irá mostrar 'Rua ABC', pelo fato que voce deu freeze em 'pessoa'.
+
+// com o Object.freeze(pessoa), nada abaixo disso irá funcionar mais.
+// pra criar e nunca mais mexer, façamos:
+const pessoaConstante = Object.freeze({nome: 'João'});
+
+console.log(pessoaConstante); // mostra apenas 'nome:João', e nada mais vai alterar nisso
+
+///////////////////
+
+Métodos Getters e Setters-
+Metodo get - le o valor de uma variavel/atributo
+Método set - altera o valor de uma variável
+metodos getters e setters são valores que podem ser acessados
+
+_valor = 1; // usar _ antes do nome da variavel é uma convenção do javascript para dizer q o atributo é pretendido a ser privado
+
+const sequencia = {
+    _valor: 1,
+    get valor() { return this._valor++},
+    set valor(valor){
+        if(valor > this._valor)
+        {
+            this._valor = valor;
+        }
+    }
+}
+
+console.log(sequencia.valor, sequencia.valor); // embora eu esteja, teoricamente, acessando um atributo, ele ta, na vdd, acessando o metodo get e o metodo set. irá mostrar 1 e 2.
+sequencia.valor = 1000;
+console.log(sequencia.valor, sequencia.valor); // mostru 1000 e 1001, metodo get e metodo set
+sequencia.valor = 900;
+console.log(sequencia.valor, sequencia.valor); // vai mostrar 1002 e 1003, pois o valor q voce ta setando é menor que o valor que já tem no get (1001 agora, pq era 1000 q setei e +1 pq executei), então ele vai simplesmente ignorar
+
+//////////
+
+Funções importantes de Objeto
+const pessoa = {
+    nome: 'Rebeca',
+    idade: 2,
+    peso: 13
+}
+
+console.log(Object.keys(pessoa)); // object.keys pega todas as chaves de um objeto, no caso, 'pessoa'. vai mostrar: 'nome idade, peso'.
+console.log(Object.values(pessoa)); // peguei uma lista dos valores de 'pessoa', no caso, mostra 'Rebeca, 2, 13'
+console.log(Object.entries(pessoa)); // vai me dar um array com todos os subarrays que vai ter a chave e o valor, no caso, me retorna: [ ['nome', 'Rebeca'], ['idade', 2], ['peso', 13] ]
+/\ // posso até percorrer através de um array:
+
+Object.entries(pessoa).forEach(e => { // a partir do foreach, vou percorrer os elementos (e) que foram gerados a partir de Object.entries
+    console.log(`${e[0]}: ${e[1]}`)
+})
+
+// usando destructuring, para ficar mais claro:
+Object.entries(pessoa).forEach(([chave, valor]) => {
+    console.log(`${chave}, ${valor}`); // agora fica mais claro saber o que é chave e o que é valor
+})
+
+Object.defineProperty // aqui, voce define uma propriedade de um objeto. pode definir dinamicamente, como fizemos acima com a notaçao literal { ... }, notaçao ponto, etc. mas pra q funçao entao? pq posso definir algumas caracteristicas pra uma propriedade (Atributo), como por ex essa propriedade pode ou não ser alterada, ficará ou não visível, etc.
+ex:
+Object.defineProperty(pessoa, 'dataNascimento', {
+    enumerable: true,
+    writable: false,
+    value: '01/01/2019'
+})
+
+pessoa.dataNascimento = '01/01/2017';
+console.log(pessoa.dataNascimento);
+console.log(Object.keys(pessoa)); // verá que vai mostrar 'nome, idade, peso, dataNascimento'. se colocar 'enumerable: false', ele não vai mostrar dataNascimento.
+
+// Object.assign
+const dest = { a: 1}
+const o1 = {b: 2}
+const o2 = {c: 3, a: 4}
+const obj = Object.assign(dest, o1, o2); // o object.assign pega o objeto de destino, que é o objeto que vai receber os atributos, no caso, 'dest', e todos os parametros que voce passou depois de 'dest', vai concatenar com os objetos que voce passou no primeiro parametro (no caso, o1 e o2 vão concatenar com os objetos que ja tem no dest. no caso, dentro de 'dest' vai ter 'b: 2, c:3 e a:4', 'a' já exisita como valor 1, mas foi sobrescrito por 4, vai tudo concatenar com o 'obj'). se eu der Object.freeze(obj) embaixo, nada mais nele poderá ser mudado.
