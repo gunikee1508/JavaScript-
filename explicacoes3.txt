@@ -1041,3 +1041,120 @@ const dest = { a: 1}
 const o1 = {b: 2}
 const o2 = {c: 3, a: 4}
 const obj = Object.assign(dest, o1, o2); // o object.assign pega o objeto de destino, que é o objeto que vai receber os atributos, no caso, 'dest', e todos os parametros que voce passou depois de 'dest', vai concatenar com os objetos que voce passou no primeiro parametro (no caso, o1 e o2 vão concatenar com os objetos que ja tem no dest. no caso, dentro de 'dest' vai ter 'b: 2, c:3 e a:4', 'a' já exisita como valor 1, mas foi sobrescrito por 4, vai tudo concatenar com o 'obj'). se eu der Object.freeze(obj) embaixo, nada mais nele poderá ser mudado.
+
+/////////////
+
+Herança é um principio da OO que faz com que voce receba atributos e comportamentos do pai, e 'reuse' códigos. em herança vc só tem um ancestral, em composiçao vc pode ser composto de multiplos objetos, por isso prefira composição a herança.
+em javascript, a herança é uma herança baseada em prototipos.
+prototipo é tipo: vc tem um objeto com atributo 'nome'. voce tenta acessar o atributo nome e ele vai pegar o atributo do proprio objeto. se voce ta tentando pegar um atributo cor do cabelo, e esse objeto que ta tentando procurar nao tem cor do cabelo, o objeto tem referencia do seu Pai, que se vc nao achou uma propriedade em seu objeto, procura o mesmo atributo no seu prototipo, caso tenha, procurando no pai do meu pai, e assim indo, se não achar, dirá q é undefined, se achar, ele devolve o valor.
+vejamos, temos um objeto chamado ferrari, e tem um atributo chamado [[Prototype]], por padrão ele aponta para Object.prototype. nem sempre vc aponta pra Object.prototype. o atributo prototype so ta disponivel dentro de uma função.
+OBS:
+[[Prototype]] != prototype (atributo)
+
+const ferrariNova = {
+    modelo: 'F40',
+    velMax: 400
+}
+
+const volvo = {
+    modelo: 'V40',
+    velMax: 320
+}
+
+console.log(ferrariNova.__proto__); // com isso, consigo acessar o prototipo do meu objeto ferrariNova, e se eu tentar acessar um atributo dentro de ferrari, e nao achar, ele vai procurar o mesmo atributo dentro do meu prototipo. ao executar, dirá q é um objeto vazio, {}, mas existe, ta presente.
+
+console.log(ferrariNova.__proto__ === Object.prototype); // verá q vai dar true, pois o [[Prototype]] aponta, por padrao, para o Object.prototype.
+
+[[Prototype]], aqui, é o __proto__
+
+console.log(volvo.__proto__ === Object.prototype); // qq outro objeto q vc crie, com isso, ira apontar pra Object.prototype
+
+console.log(Object.prototype.__proto__ === null); // nao tem ninguem mais acima de prototype, portanto é nulo
+
+// isso não vale se vc estiver criando sua funçao construtora
+
+function MeuObjeto() {}
+    console.log(typeof Object, typeof MeuObjeto);
+    console.log(Object.prototype, MeuObjeto.prototype);
+
+
+////////
+
+Cadeia de protótipos (prototype chain)
+
+const avo = { attr1: 'A' }
+const pai = { __proto__: avo, attr2: 'B'}; // pra eu referenciar que o pai tem o prototipo 'avo', eu tenho q atribuir na propriedade __proto__: avo.
+const filho = {__proto__: pai, attr3: 'C'};
+
+// o avo tem o atributo1, q é 'A', o pai tem attr2 q é o B, e o filho tem attr3 q é 'C'. o filho tem como prototipo o pai, o pai tem como prototipo o avo, e o avo tem como prototipo o Object.prototype.
+console.log(filho.attr1); // vai mostrar 'A'
+
+Agora, se eu der, acima do avo:
+Object.prototype.attr0 = 'Z'; // não é recomendado
+console.log(filho.attr0, filho.attr1, filho.attr2, filho.attr3); // vai mostrar 'Z', pq ele vai procurar no pai, depois no avo, nao achou nenhum attr0, entao agr vai procurar no prototype, e achou, mas este caso não é muito recomendado.
+
+const carro = {
+    velAtual: 0,
+    velMax: 200,
+    acelerarMais(delta){
+        if(this.velAtual + delta <= this.velMax) {
+            this.velAtual += delta;
+        }
+        else {
+            this.velAtual = this.velMax;
+        }
+    },
+    status() {
+        return `${this.velAtual}Km/h de ${this.velMax}Km/h`;
+    }
+}
+
+const ferrari = {
+    modelo: 'F40',
+    velMax: 324 // no momento que defino a velMax, esse atributo vai sombrear o atributo original de 'carro', então vou ter aqui o shadowing, que é o 'sombreamento', onde temos uma variavel local e essa variavel pode sombrear variavel de escopo mais abrangente
+}
+
+const volvo = {
+    modelo: 'V40',
+    status() {
+        // sombreei a função 'status', vou usar ela com uma funçao a mais. assim como uso 'this' pra referenciar ao objeto atual, eu uso 'super' pra referenciar o meu prototipo. 
+        return `${this.modelo}: ${super.status()}`; // estou sombreando a minha funçao status através do objeto 'volvo', por enquanto ela é uma funçao independente. com o 'super' eu uso a função do meu prototipo, isto é, status do prototipo, no caso, carro.
+    }
+}
+
+Object.setPrototypeOf(ferrari, carro); // estabeleci uma relação entre ferrari e carro. isto é, ferrari tem 'carro' como seu prototipo. 'setPrototypeOf' é um método especificado pela linguagem, onde tiver JS, ele funcionará. primeiro tenho o objeto (ferrari), depois é o prototipo daquele objeto (carro).
+
+Object.setPrototypeOf(volvo, carro);
+
+console.log(ferrari);
+console.log(volvo);
+
+volvo.acelerarMais(100);
+console.log(volvo.status());
+
+ferrari.acelerarMais(300);
+console.log(ferrari.status()); // no caso, vai chamar o proprio metodo status de 'carro', ja que nao sobrescrevi em 'ferrari'
+
+///////////
+
+Herança #3-
+const pai = {
+    nome: 'Pedro',
+    corCabelo: 'Preto'
+}
+
+const filha1 = Object.create(pai); // vai criar o objeto filha1 tendo como prototipo 'pai'. define como prototipo o objeto que voce passou como parametro. eu passo o objeto que eu quero que seja o prototipo do objeto que está sendo criado a partir do método Object.create
+filha1.nome = 'Ana'; // já alterei o nome da filha. ja tenho acesso a 'nome' e 'corcabelo'. aqui ja tenho objeto normal, ele aponta pro objeto que voce usou como prototipo no 'Object.create', no caso, 'pai'.
+console.log(filha1.corCabelo); // vai mostrar 'preto'
+
+// ja posso ate criar outros atributos, dizer se o atributo sera enumerado, sera escrito, etc. \/
+const filha2 = Object.create(pai, { 
+    nome: { value: 'Bia', writable: false, enumerable: true} // não poderá ser escrito ('nome' será 'bia' e não poderá ser mudado) e poderá ser listado (enumerable), então pode ajudar se for usar object.key ou foreach 
+}); // o 2º parametro desse objeto será todos os atributos que eu quero adicionar
+
+console.log(filha2.nome);
+
+for(let key in filha2) {
+    filha2.hasOwnProperty(key) ?
+        console.log(key) : console.log(`Por herança: ${key}`);
+} // for in aqui é a possibilidade de verificar se uma determinada propriedade pertence ou não ao objeto que voce esta percorrendo no momento. no caso, aqui, hasownProperty se retornar true significa que o atributo pertence ao proprio objeto, senão significa que vc recebeu o atributo a partir da cadeia de prototipos, isto é, a partir da cadeia de herança.

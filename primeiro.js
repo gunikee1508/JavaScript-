@@ -795,3 +795,51 @@ console.log(Object.entries(newPessoa)); // vai me dar um array com todos os suba
 Object.entries(newPessoa).forEach(([chave, valor]) => {
     console.log(`${chave}, ${valor}`)
 })
+
+const ferrariNova = {
+    modelo: 'F40',
+    velMax: 400
+}
+
+const volvo = {
+    modelo: 'V40',
+    velMax: 320
+}
+
+console.log(ferrariNova.__proto__);
+console.log(ferrariNova.__proto__ === Object.prototype);
+
+console.log(Object.prototype.__proto__); // nao tem ninguem mais acima de prototype
+
+// isso não vale se vc estiver criando sua funçao construtora
+
+function MeuObjeto() {}
+console.log(typeof Object, typeof MeuObjeto);
+console.log(Object.prototype, MeuObjeto.prototype);
+
+Object.prototype.attr0 =  'Z';
+const avo = { attr1: 'A' }
+const pai = { __proto__: avo, attr2: 'B'}; // pra eu referenciar que o pai tem o prototipo 'avo', eu tenho q atribuir na propriedade __proto__: avo.
+const filho = {__proto__: pai, attr3: 'C'};
+
+// o avo tem o atributo1, q é 'A', o pai tem attr2 q é o B, e o filho tem attr3 q é 'C'. o filho tem como prototipo o pai, o pai tem como prototipo o avo, e o avo tem como prototipo o Object.prototype.
+console.log(filho.attr0, filho.attr1, filho.attr2, filho.attr3); // vai mostrar 'Z', pq ele vai procurar no pai, depois no avo, nao achou nenhum attr0, entao agr vai procurar no prototype, e achou
+
+const filha1 = Object.create(pai, {
+    nome: {value: 'Bia', writable: false, enumerable: true}
+});
+
+const filha2 = Object.create(pai, {
+    nome: {value: 'Bia', writable: false, enumerable: true}
+});
+
+console.log(Object.keys(filha2));
+console.log(Object.keys(filha1));
+
+for(let key in filha2) {
+    filha2.hasOwnProperty(key) ?
+        console.log(key) : console.log(`Por herança: ${key}`);
+}
+
+
+
