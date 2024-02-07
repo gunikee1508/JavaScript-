@@ -841,5 +841,112 @@ for(let key in filha2) {
         console.log(key) : console.log(`Por herança: ${key}`);
 }
 
+const obj1 = new MeuObjeto
+const obj2 = new MeuObjeto
+console.log(obj1.__proto__ === obj2.__proto__);
+console.log(MeuObjeto.prototype === obj1.__proto__);
 
+MeuObjeto.prototype.nome = 'Anônimo';
+MeuObjeto.prototype.falar = function () {
+    console.log(`Bom dia! Meu nome é ${this.nome}!`);
+}
 
+MeuObjeto.prototype.falar();
+
+obj1.falar();
+obj2.nome = 'Rafael';
+console.log(obj2.nome);
+obj2.falar();
+
+const obj3 = {};
+obj3.__proto__ = MeuObjeto.prototype; // estou mudando a referencia do meu obj3 pra sair de obj3.__proto__ pra ir pra MeuObjeto.prototype.
+obj3.nome = 'Obj3';
+obj3.falar();
+
+console.log((new MeuObjeto).__proto__ === MeuObjeto.prototype);
+console.log(MeuObjeto.__proto__);
+console.log(MeuObjeto.__proto__ === Function.prototype);
+console.log(Function.prototype.__proto__ === Object.prototype);
+
+Array.prototype.first = function () {
+    return this[0];
+}
+
+console.log([1, 2, 3, 4, 5].first()); // me mostra '1'
+console.log(['a', 'b', 'c'].first()); // me mostra 'a'
+
+String.prototype.toString = function() { // toString voce esta sobrescrevendo o comportamento
+    return 'Lascou tudo';
+} 
+
+//console.log('Escola Cod3r'.reverse());
+
+function Aula(nome, videoID) {
+    this.nome = nome;
+    this.videoID = videoID;
+}
+
+const aula1 = new Aula('Bem-Vindo', 123);
+const aula2 = new Aula('Até breve', 456);
+console.log(aula1, aula2);
+
+//simulando o new
+function novo(f, ...params) { // ...params é um array que representa a lista de parametros que quero aplicar na função f
+    const obj = {}
+    obj.__proto__ = f.prototype
+    f.apply(obj, params); // passei como objeto de contexto o obj, e passando como parametros no que recebeu como ...params
+    return obj;
+}
+
+const aula3 = novo(Aula,'Bem-Vindo', 123);
+const aula4 = novo(Aula, 'Até Breve', 456);
+console.log(aula3, aula4);
+
+const produto90 = Object.preventExtensions({ // me retorna um 'produto90' que não pode ser extendido.
+    nome: 'Qualquer', preco: 1.99, tag: 'promoção'
+})
+
+console.log('Extensível:', Object.isExtensible(produto90));
+produto90.nome = 'Borracha';
+produto90.descricao = 'Borracha escolar branca'
+delete produto90.tag;
+console.log(produto90);
+
+const objn = { a: 1, b: 2, c: 3, soma() { return a + b + c } }
+console.log(JSON.stringify(objn));
+
+//console.log(JSON.parse("{a: 1, b: 2, c: 3}"));
+//console.log(JSON.parse("{ 'a': 1, 'b': 2, 'c': 3}")); // não são formatos válidos de JSON, pois todos os atributos no formato JSON, o nome do atributo deve ser delimitado por aspas duplas.
+
+console.log(JSON.parse('{ "a": 1, "b": 2, "c": 3 }'));
+
+class Lancamento {
+    constructor(nome = 'Genérico', valor = 0) { // é a forma que a funçao tem que por padrão é chamada no momento que essa classe for instanciada com o operador new
+        this.nome = nome; // estou dizendo que estou adicionando ao objeto que está sendo instanciado o atributo 'nome' que é o que eu recebi como parametro.
+        this.valor = valor;
+    }
+}
+
+class CicloFinanceiro {
+    constructor(mes, ano){
+        this.mes = mes;
+        this.ano = ano;
+        this.lancamentos = [];
+    }
+    addLancamentos(...lancamentos) {
+        lancamentos.forEach(l => this.lancamentos.push(l)) // vou pegar cada elemento e dar um push no array que pertence ao objeto.
+    }
+    sumario () {
+        let valorConsolidado = 0;
+        this.lancamentos.forEach(l => {
+            valorConsolidado += l.valor
+        })
+        return valorConsolidado;
+    }
+}
+
+const salario = new Lancamento('Salario', 45000);
+const contaDeLuz = new Lancamento('Luz', -220);
+const contas = new CicloFinanceiro(6, 2018);
+contas.addLancamentos(salario, contaDeLuz);
+console.log(contas.sumario());

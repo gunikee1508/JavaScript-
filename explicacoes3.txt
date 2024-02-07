@@ -1158,3 +1158,163 @@ for(let key in filha2) {
     filha2.hasOwnProperty(key) ?
         console.log(key) : console.log(`Por herança: ${key}`);
 } // for in aqui é a possibilidade de verificar se uma determinada propriedade pertence ou não ao objeto que voce esta percorrendo no momento. no caso, aqui, hasownProperty se retornar true significa que o atributo pertence ao proprio objeto, senão significa que vc recebeu o atributo a partir da cadeia de prototipos, isto é, a partir da cadeia de herança.
+
+////////////////
+
+function MeuObjeto() {}
+console.log(MeuObjeto.prototype);
+
+const obj1 = new MeuObjeto
+const obj2 = new MeuObjeto
+console.log(obj1.__proto__ === obj2.__proto__); // verá que vai dar true, ou seja, os objetos apontam para o mesmo objeto, mesmo padrão
+// quando voce cria um objeto a partir de uma função construtora usando 'new', o prototipo deste objeto automaticamente aponta para a função que voce criou . prototype
+
+MeuObjeto.prototype.nome = 'Anônimo';
+MeuObjeto.prototype.falar = function () {
+    console.log(`Bom dia! Meu nome é ${this.nome}!`);
+}
+
+__proto__ é como o objeto se referencia ao seu protótipo.
+já que 'obj1/obj2' nao sobrescreveu o atributo de 'nome', ele vai pegar o atributo 'nome' do protótipo (no this.nome)
+
+obj1.falar();
+obj2.nome = 'Rafael';
+obj2.falar();
+
+const obj3 = {};
+obj3.__proto__ = MeuObjeto.prototype; // estou mudando a referencia do meu obj3 pra sair de obj3.__proto__ pra ir pra MeuObjeto.prototype.
+obj3.nome = 'Obj3';
+obj3.falar();
+
+// Veja:
+console.log((new MeuObjeto).__proto__ === MeuObjeto.prototype); // (new MeuObjeto) é uma instancia da funçao, ele tem __proto__ pq o resultado de new MeuObjeto é um objeto, e o __proto__ é exatamente igual a MeuObjeto.prototype, pq quando o objeto é instanciado a partir dessa funçao, eles são iguais.
+console.log(MeuObjeto.__proto__ === Function.prototype); // a função também tem o __proto__
+console.log(Function.prototype.__proto__ === Object.prototype); // isso é mais curiosidade, mas o prototipo do prototipo de uma função, é igual e identico ao prototipo de um objeto.
+
+////////////
+
+Herança 5-
+---------------> toda função tem um atributo chamado .prototype
+
+String.prototype.reverse = function() {
+    return this.split('').reverse().join(''); // vou quebrar a string em cada uma das letras, e vou gerar um array com cada uma das letras e também vai incluir espaços em branco. o array tbm tem a função 'reverse', ou seja, vai reverter os elementos do array, e no final usei 'join' para juntar todos os os elementos na string novamente.
+}
+
+console.log('Escola Cod3r'.reverse());
+
+Array.prototype.first = function () {
+    return this[0]
+}
+
+console.log([1,2,3,4,5].first()); // me mostra '1'
+console.log(['a', 'b', 'c'].first()); // me mostra 'a'
+
+String.prototype.toString = function() { // toString voce esta sobrescrevendo o comportamento
+    return 'Lascou tudo';
+} 
+
+console.log('Escola Cod3r'.reverse()); // dá erro, mas o chatgpt corrige.
+
+/////////////
+
+function Aula(nome, videoID) {
+    this.nome = nome;
+    this.videoID = videoID;
+}
+
+const aula1 = new Aula('Bem-Vindo', 123);
+const aula2 = new Aula('Até breve', 456);
+console.log(aula1, aula2);
+
+/\ // quando voce usa o 'new', não tem so o fato de criar um objeto feito, mas tambem que o prototipo do objeto criado aponta para a função, no caso, aponta para Aula (Aula.prototype).
+
+//simulando o new
+function novo(f, ...params) { // ...params é um array que representa a lista de parametros que quero aplicar na função f
+    const obj = {}
+    obj.__proto__ = f.prototype
+    f.apply(obj, params); // passei como objeto de contexto o obj, e passando como parametros no que recebeu como ...params
+    return obj;
+}
+
+const aula3 = novo(Aula,'Bem-Vindo', 123);
+const aula4 = novo(Aula, 'Até Breve', 456);
+console.log(aula3, aula4); 
+
+/////////////
+
+Temos o Object.preventExtensions -> posso até excluir atributos, mas nao posso adicionar novos atributos no Objeto, pois voce ta prevenindo a capacidade de adicionar novos atributos.
+const produto = Object.preventExtensions({ // me retorna um 'produto' que não pode ser extendido.
+    nome: 'Qualquer', preco: 1.99, tag: 'promoção'
+})
+
+console.log('Extensível:', Object.isExtensible(produto));
+produto.nome = 'Borracha'; // alterei um atributo que já existe, isso não tem muito problema não.
+produto.descricao = 'Borracha escolar branca'; // adicionei um atributo, isso não funciona, não pode adicionar novas chaves e valores.
+delete produto.tag; // removi um atributo, tb não tem problema.
+console.log(produto); // só mostra 'nome' e 'preco'.
+
+// vendo agora o Object.seal
+const pessoa = { nome: 'Juliana', idade: 35}
+Object.seal(pessoa);
+
+/\ // ele sela o objeto, isto é, vc não consegue adicionar novos atributos, nem excluir atributos do objeto, mas consegue alterar os atributos já existentes.
+console.log('Selado: ', Object.isSealed(pessoa));
+pessoa.sobrenome = 'Silva';
+delete pessoa.nome;
+pessoa.idade = 29;
+console.log(pessoa); // vai mostrar nome e idade normal, não adiciona nem remove, apenas altera os atributos existentes.
+
+// Object.freeze = selado + valores constantes. não consegue adicionar valores, nem excluir, nem modificar dados das variaveis do objeto, é completamente constante. writable = false.
+
+////////////////
+
+JSON vs Objeto
+JSON, na teoria, era pra ser objeto, mas na vdd é um formato textual.
+JSON é um formato de dados, para interoperabilidade entre sistemas, que é voce ter um formato textual generico que nao carrega consigo nada especifico de um sistema. Consegue ler JSON em qualquer linguagem.
+
+const obj = { a: 1, b:2, c: 3, soma() { return a + b + c } }
+console.log(JSON.stringify(obj)); // serializou as propriedades 'a,b,c', mas no caso, não serializou a função, pois funções não são serializáveis em JSON. stringify é um metodo em javascript que converte um objeto JavaScript em uma string JSON.
+
+console.log(JSON.parse("{a: 1, b: 2, c: 3}"));
+console.log(JSON.parse("{ 'a': 1, 'b': 2, 'c': 3}")); // não são formatos válidos de JSON, pois todos os atributos no formato JSON, o nome do atributo deve ser delimitado por aspas duplas. 
+pra corrigir isso, veja abaixo:
+
+
+console.log(JSON.parse('{ "a": 1, "b": 2, "c": 3 }')); // agora sim, é um objeto gerado a partir de um texto respeitando o formato JSON. o valor numerico nao fica em aspas duplas, apenas se fosse string.
+outro ex:
+
+console.log(JSON.parse('{ "a": 1.7, "b": "string", "c": true, "d": {}, "e": [] }')); // coloquei objeto dentro do json, array de elementos, mas so lembre-se q para representar string em json é com aspas duplas. e todos os atributos tem que ser com aspas duplas.
+
+//////////////
+
+Classe #1
+class Lancamento {
+    constructor(nome = 'Genérico', valor = 0) { // é a forma que a funçao tem que por padrão é chamada no momento que essa classe for instanciada com o operador new
+        this.nome = nome; // estou dizendo que estou adicionando ao objeto que está sendo instanciado o atributo 'nome' que é o que eu recebi como parametro.
+        this.valor = valor;
+    }
+}
+
+class CicloFinanceiro {
+    constructor(mes, ano){
+        this.mes = mes;
+        this.ano = ano;
+        this.lancamentos = [];
+    }
+    addLancamentos(...lancamentos) {
+        lancamentos.forEach(l => this.lancamentos.push(l)) // vou pegar cada elemento e dar um push no array que pertence ao objeto.
+    }
+    sumario () {
+        let valorConsolidado = 0;
+        this.lancamentos.forEach(l => {
+            valorConsolidado += l.valor
+        })
+        return valorConsolidado;
+    }
+}
+
+const salario = new Lancamento('Salario', 45000);
+const contaDeLuz = new Lancamento('Luz', -220);
+const contas = new CicloFinanceiro(6, 2018);
+contas.addLancamentos(salario, contaDeLuz);
+console.log(contas.sumario());
