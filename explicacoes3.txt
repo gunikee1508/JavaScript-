@@ -1318,3 +1318,13 @@ const contaDeLuz = new Lancamento('Luz', -220);
 const contas = new CicloFinanceiro(6, 2018);
 contas.addLancamentos(salario, contaDeLuz);
 console.log(contas.sumario());
+
+
+//////////////////
+
+Array geral -
+
+No JS não existe array nativo, na verdade o array é um objeto que organiza seus dados a partir de um indice. temos chave valor. se vc der typeOf Array, vai mostrar function. a boa prática diz que não é bom ter mistura de tipo de dados em um array (boolean, int, string, etc), trabalhe com dados homogeneas.
+
+aprovados = ['Bia', 'Carlos', 'Ana'];
+console.log(aprovados[0]); // acessei o elemento Bia.
