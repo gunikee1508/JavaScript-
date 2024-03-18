@@ -1322,9 +1322,143 @@ console.log(contas.sumario());
 
 //////////////////
 
+Classe #2 - 
+
+class Avo {
+    constructor (sobrenome) {
+        this.sobrenome = sobrenome;        
+    }
+}
+
+class Pai extends Avo {
+    constructor(sobrenome, profissao = 'Professor') {
+        super(sobrenome); // é uma forma de chamar o construtor de avo pra que sete o sobrenome.
+    }
+}
+
+class Filho extends Pai {
+    constructor() { // passei nenhum parametro
+        super('Silva'); // vai chamar o construtor do pai
+    }
+}
+
+const filho = new Filho();
+console.log(filho);
+
+/////////////////////////
+
 Array geral -
 
 No JS não existe array nativo, na verdade o array é um objeto que organiza seus dados a partir de um indice. temos chave valor. se vc der typeOf Array, vai mostrar function. a boa prática diz que não é bom ter mistura de tipo de dados em um array (boolean, int, string, etc), trabalhe com dados homogeneas.
 
 aprovados = ['Bia', 'Carlos', 'Ana'];
 console.log(aprovados[0]); // acessei o elemento Bia.
+
+se eu coloco:
+aprovados.sort();
+console.log(aprovados);
+
+// se eu ponho:
+delete aprovados[1]; // vai apagar apenas o de indice 1
+
+tenho a função splice, ela serve pra adicionar elementos em um indice, remover elementos e adicionar e remover ao mesmo tempo:
+aprovados.splice(1, 1); // o primeiro parametro é o indice que voce quer trabalhar, no caso quero trabalhar com indice do elemento 'Carlos' e tbm na altura do elemento do 'Carlos', vou excluir um elemento, no caso vou excluir o 'Carlos'.
+se fosse: 
+
+aprovados.splice(1, 2); // iria excluir 2 elementos a partir do Carlos, no caso, seria o Carlos e a Ana.
+
+pra adicionar elemento:
+aprovados.splice(1, 2, 'Elemento1', 'Elemento2');
+console.log(aprovados); // iria mostrar [ 'Bia', 'Elemento1', 'Elemento2' ]
+
+se fosse:
+aprovados.splice(1, 0, 'Elemento1', 'Elemento2'); // vai remover nenhum e vai adicionar os 2 elementos a partir do indice 1
+console.log(aprovados); // ou seja, vai mostrar [ 'Bia', 'Elemento1', 'Elemento2', 'Carlos', 'Ana' ]
+
+/////////////
+
+Array métodos importantes-
+const pilotos = ['Vettel', 'Alonso', 'Raikkonen', 'Massa'];
+pilotos.pop(); // esse método remove o ultimo elemento do array, no caso, vai remover 'Massa'.
+
+pilotos.shift(); // o 'shift' tira elemento da primeira posição do array.
+console.log(pilotos); // vai mostrar sem o 'vettel', já que removemos.
+
+pilotos.unshift('Hamilton'); // o método 'unshift' adiciona um elemento na primeira posição do array.
+console.log(pilotos); // vai mostrar o array com 'Hamilton'
+
+pilotos.splice(1, 0, 'Verstappen', 'Bottas'); // não vai remover nenhum e vai adicionar 'vestappen' e 'bottas' a partir do indice 1.
+
+pilotos.splice(3, 1); // a partir do indice 3 vai remover apenas 1 elemento.
+
+const algunsPilotos1 = pilotos.slice(2); // esse método retorna um novo array. no caso aqui, vai gerar um novo array a partir do indice 2. ou seja, a partir do indice 2, vai pegar todos os outros elementos e gerar um novo array com eles.
+console.log(algunsPilotos1);
+
+// o slice é voce pegar uma parte do array, um pedaço. 
+
+const algunsPilotos2 = pilotos.slice(1, 4); // pegando do indice 1 até o indice 4, mas o indice 4 não vai entrar, o indice 4 não conta, mas o indice 1 conta na geração do novo array.
+console.log(algunsPilotos2);
+
+//////////////
+
+Simulando Array com Objeto - 
+
+const quaseArray = { 0: 'Rafael', 1: 'Ana', 2: 'Bia'};
+console.log(quaseArray); // veremos que de fato ele é um objeto e não um array.
+
+// vou criar um método ToString dentro desse objeto quaseArray, mas será um objeto não listado, usaremos o ToString pra simular a impressão no console como se fosse um array.
+
+const quaseArray = { 0: 'Rafael', 1: 'Ana', 2: 'Bia'};
+console.log(quaseArray); 
+Object.defineProperty(quaseArray, 'toString', { // o toString é uma função que vai retonrar object.values. 'tostring' é o nome da propriedade que esta sendo definida ou modificada.
+    value: function() { return Object.values(this)},
+    enumerable: false
+})
+
+console.log(quaseArray[0])
+
+const meuArray = ['Rafael', 'Ana', 'Bia'];
+console.log(quaseArray.toString(), meuArray);
+
+////////////////
+
+Foreach - 
+const aprovados = ['Agatha', 'Aldo', 'Daniel', 'Raquel'];
+
+// percorrendo o array aprovados com forEach e dentro dos () passando um callback, passo uma funçao, e esse callback será passada a cada vez que eu fizer uma iteração no array, isto é, para cada elemento percorrido no array vai chamar o callback passando o proprio elemento e o indice do elemento. tem 2 parametros, o 1o parametro é o proprio elemento que to percorrendo e o 2o elemento vai ser o índice do elemento que está sendo executado no momento.
+
+aprovados.forEach(function(nome, indice) {
+    console.log(`${indice+1} : ${nome}`);
+});
+
+imprimindo no console só o nome:
+aprovados.forEach(nome => console.log(nome)); // vai mostrar cada um dos nomes de array de aprovados. aqui trabalhando com arrow function.
+
+const exibirAprovados = aprovado => console.log(aprovado);
+aprovados.forEach(exibirAprovados);
+
+temos um terceiro parametro no foreach, podendo ser ate um array.
+aprovados.forEach(function(nome, indice, array) {
+    console.log(`${indice+1} : ${nome}`);
+    console.log(x);
+});
+
+// os indices do foreach, o 2o é sempre o indice, o terceiro é sempre o array completo. o primeiro é a função a ser passada.
+
+// basicamente foreach: para cada elemento de um array, iremos passar uma função.
+
+////////////
+
+Foreach #02 -
+
+Array.prototype.forEach2 = function(callback) {
+    for(let i=0; i < this.length; i++){ // this.length pra acessar uma instancia de Array
+        callback(this[i], i, this); // passando o elemento do array, o indice do array, e o array completo
+    }
+}
+
+const aprovados = ['Agatha', 'Aldo', 'Daniel', 'Raquel'];
+
+aprovados.forEach2(function(nome, indice) { // Vamos ter que criar um método foreach2 pra poder fazer o exemplo funcionar.
+    console.log(`${indice+1} : ${nome}`);
+})
