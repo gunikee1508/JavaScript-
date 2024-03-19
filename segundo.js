@@ -105,3 +105,98 @@ const aprovados = ['Agatha', 'Aldo', 'Daniel', 'Raquel'];
 aprovados.forEach2(function(nome, indice) {
     console.log(`${indice+1} : ${nome}`);
 })
+
+const nums = [1,2,3,4,5];
+/*
+let resultado = nums.map(function(e) { // passando um callback/funçao pro map. aqui é a funçao passando somente o elemento atual.
+    return e * 2
+});
+console.log(resultado);
+*/
+const soma10 = e => e + 10; // aq tenho uma funçao soma10 que recebe um elemento e 'e' e transforma esse elemento em nele + 10.
+const triplo = e => e * 3;
+const paraDinheiro = e => `R$ ${parseFloat(e).toFixed(2).replace('.',',')}`
+resultado = nums.map(soma10).map(triplo).map(paraDinheiro);
+console.log(resultado);
+
+const carrinho = [
+    '{"nome": "Borracha", "preco": 3.45}', 
+    '{"nome":"Caderno", "preco": 13.90}',
+    '{"nome":"Kit de Lápis", "preco": 41.22}',
+    '{"nome": "Caneta", "preco": 7.50}'
+]
+/*
+const arrayCarrinho = carrinho.map(item=>JSON.parse(item).preco);
+console.log(arrayCarrinho);
+*/
+const paraObjeto = json => JSON.parse(json); // Converte um texto em objeto.
+const apenasPreco = produto => produto.preco;
+/*
+const resultado = carrinho.map(paraObjeto).map(apenasPreco);
+console.log(resultado);
+*/
+
+const produtos = [
+    {nome: 'Notebook', preco: 2499, fragil: true},
+    {nome: 'iPad Pro', preco: 4199, fragil: true},
+    {nome: 'Copo de Vidro', preco: 12.99, fragil: true}, 
+    {nome: 'Copo de Plástico', preco: 18.99, fragil: false}
+]
+
+const caro = produto => produto.preco >= 500;
+const fragil = produto => produto.fragil; // subentendido q é true
+
+const resultado = produtos.filter(caro).filter(fragil);
+console.log(resultado);
+
+//const resultado = produtos.filter(function(p) { return p.fragil == true}).filter(function(e) { return e.preco > 500});
+//console.log(resultado);
+
+
+const alunos = [
+    {nome: 'João', nota: 7.3, bolsista: false},
+    {nome: 'Maria', nota: 9.2, bolsista: true},
+    {nome: 'Pedro', nota: 9.8, bolsista: false},
+    {nome: 'Ana', nota: 8.7, bolsista: true}
+]
+
+console.log(alunos.map(a => a.nota));
+const resultadoNew = alunos.map(a=>a.nota).reduce(function(acumulador, atual) {
+    console.log(acumulador, atual);
+    return acumulador + atual;
+});
+
+const alunos = [
+    {nome: 'João', nota: 7.3, bolsista: false},
+    {nome: 'Maria', nota: 9.2, bolsista: true},
+    {nome: 'Pedro', nota: 9.8, bolsista: false},
+    {nome: 'Ana', nota: 8.7, bolsista: true}
+];
+
+const todosBolsistas = alunos.filter
+console.log(todosBolsistas);
+
+////
+
+const numeros = [1,2,3,4,5,6];
+
+
+let somaTotal = 0;
+numeros.forEach(function(p){
+	somaTotal = somaTotal + p;
+    console.log('elemento: ',p, 'vl atual somaTotal: ', somaTotal);
+});
+console.log(somaTotal);
+
+
+const numeros = [1,2,3,4,5,6];
+function fn1(total, current) { // Aqui é a ordem dos parâmetros da callback pela sintaxe
+    console.log('Total:' + total + ' Atual: ' + current, ' retorno: ', total + current); 
+    return total + current; // O retorno da função sempre retorna para o primeiro parâmetro da função.
+}
+const resultadoNovo = numeros.reduce(fn1,0);
+console.log(resultadoNovo);
+
+const numeros = [1,2,3,4,5,6];
+const somatorio= numeros.reduce( (ac,cur)=>ac+cur,0);
+console.log(somatorio);

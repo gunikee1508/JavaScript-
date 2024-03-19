@@ -1389,7 +1389,7 @@ console.log(pilotos); // vai mostrar o array com 'Hamilton'
 
 pilotos.splice(1, 0, 'Verstappen', 'Bottas'); // não vai remover nenhum e vai adicionar 'vestappen' e 'bottas' a partir do indice 1.
 
-pilotos.splice(3, 1); // a partir do indice 3 vai remover apenas 1 elemento.
+pilotos.splice(3, 1); // a partir do indice 3 vai remover apenas 1 elemento, isto é, remover o elemento de indice 3.
 
 const algunsPilotos1 = pilotos.slice(2); // esse método retorna um novo array. no caso aqui, vai gerar um novo array a partir do indice 2. ou seja, a partir do indice 2, vai pegar todos os outros elementos e gerar um novo array com eles.
 console.log(algunsPilotos1);
@@ -1462,3 +1462,173 @@ const aprovados = ['Agatha', 'Aldo', 'Daniel', 'Raquel'];
 aprovados.forEach2(function(nome, indice) { // Vamos ter que criar um método foreach2 pra poder fazer o exemplo funcionar.
     console.log(`${indice+1} : ${nome}`);
 })
+
+/////////////////
+
+Função MAP -
+Associado ao MAP, dentro dele, existe um laço. O MAP serve pra fazer uma transformação do array. A ideia é mapear um array para outro array de mesmo tamanho, porém com os dados transformados. Por ex, você tem um array com 3 elementos, numero 1, 2 e 3. Vc quer transformar esse array de 3 elementos em outro array de 3 elementos no qual cada um dos elementos seja o dobro do array original. Então vc vai usar um map para fazer isso. Vc vai percorrer cada um dos elementos e o resultado final dessa transformação usando map é outro array do mesmo tamanho com os dados transformados. Vc pode ter um map que pega um objeto e transforma em numero, vc pega um objeto e transforma em string, pegar um array com varios JSONs e trnasformar em array de objetos, etc. O Map serve pra transformar um array em outro. 
+A regra: se o array original tem 6 elementos, o resultado do map vai gerar um array de 6 elementos porém com os dados transformados. Então o map serve para mapear os elementos de um array para o outro porém com o array original tem um tamanho X e o array transformado vai ter o mesmo tamanho X.
+
+const nums = [1,2,3,4,5];
+
+// O Map é um FOR com Propósito. Se usar o foreach ele vai dar os elementos do jeito que é no array. No caso do MAP, ele tem internamente um For, mas além de ter o For ele vai fazer uma transformação em cada um dos elementos de um array para outro array de mesmo tamanho. Vou armazenar o array resultante em uma variavel chamada resultado. A função map pode receber 3 parametros, que é o proprio valor atual, o indice e o array completo. Por enquanto, abaixo, vamos fazer uma funçao passando somente o elemento atual.
+
+let resultado = nums.map(function(e) { // passando um callback/funçao pro map. aqui é a funçao passando somente o elemento atual.
+    return e * 2
+}); // dentro do map passei a funçao que eu quero usar pra transformar cada um dos elementos. o resultado dessa função vai retornar um dos elementos q vai compor o array final q armazenei na variavel 'resultado'.
+
+console.log(resultado);
+
+// Entenda que o Map não transforma o array atual, ele gera um novo array, então ele não causa modificação no array atual. o método q vc passa pro Map tem que ter um retorno (return) pra que ele possa transformar em outra coisa.
+
+const soma10 = e => e + 10; // aq tenho uma funçao soma10 que recebe um elemento e 'e' e transforma esse elemento em nele + 10.
+const triplo = e => e * 3;
+const paraDinheiro = e => `R$ ${parseFloat(e).toFixed(2).replace('.',',')}`
+
+resultado = nums.map(soma10).map(triplo).map(paraDinheiro); // se eu trocar a ordem, o resultado será diferente, pois fará os calculos diferentes, a ordem dos maps importa. 
+console.log(resultado);
+
+//////////////
+
+Map #02
+Um desafio:
+
+const carrinho = [
+    '{"nome", "Borracha", "preco": 3.45}', // aq é string JSON, onde cada atributo é delimitado por aspas duplas, e qd for string tbm delimitado por aspas duplas.
+    '{"nome":"Caderno", "preco": 13.90}',
+    '{"nome":"Kit de Lápis", "preco": 41.22}',
+    '{"nome": "Caneta", "preco": 7.50}'
+]
+
+// Retornar um array apenas com os preços desse array acima.
+
+Feito por mim:
+const arrayCarrinho = carrinho.map(item=>JSON.parse(item).preco);
+console.log(arrayCarrinho);
+
+// Do Leitão:
+Primeiro passo é fazer um JSON.parse pra transformar as strings em objetos.
+
+const paraObjeto = json => JSON.parse(json); // Converte um texto em objeto.
+const apenasPreco = produto => produto.preco;
+
+const resultado = carrinho.map(paraObjeto).map(apenasPreco); // map encadeado.
+console.log(resultado);
+
+/\ Basicamente: tenho a função paraObjeto em que ela tem um parametro json e transforma o texto 'json' em objeto.
+Tenho tbm a função 'apenasPreco' que recebe um parametro produto, e retorno o preco de 'produto'.
+
+Aí crio uma constante resultado que recebe: faz uma iteração no array 'carrinho' através de map, e a cada elemento do array 'carrinho' vai executar a função 'paraObjeto', pegando um array de objeto. E em cada iteração que fizer, vai pegar apenas o preco do elemento, passando a função apenasPreco.
+Imprimo 'resultado'.
+
+se você colocasse: const resultado = carrinho.map(paraObjeto); ===> iria mostrar o array de objeto.
+
+////////////
+
+Map #03 -
+É criando map2...
+
+
+/////////
+
+Filter #01 -
+Outra forma de percorrer um array com mais propósito... o map é interessante pra um proposito de vc tem um array e quer transformar em outro. uma outra forma interessante é o filter, que serve para filtrar um array, pra você ter um subarray, uma quantidade de elementos menores baseado em algum criterio de filtro. ex, vc quer todos os alunos com nota maior que 7. ou todos os produtos marcar como 'fragil'. clientes em debito com a empresa.
+
+const produtos = [
+    {nome: 'Notebook', preco: 2499, fragil: true},
+    {nome: 'iPad Pro', preco: 4199, fragil: true},
+    {nome: 'Copo de Vidro', preco: 12.99, fragil: true}, 
+    {nome: 'Copo de Plástico', preco: 18.99, fragil: false}
+]
+
+console.log(produtos.filter(function(p) { // no filter vou passar minha função callback que recebe um parâmetro 'p' que recebe cada produto da iteração. 'p' é cada um dos elementos do array, isto é, 'p' é cada um dos produtos do array. na callback, o filter recebe 3 parametros: o elemento que está atualmente sendo processado no array, index (indice do elemento atual que esta sendo processado no array) e o array inteiro. diferente do 'map', onde o array transformado tem que ter a mesma quantidade de elementos que o array original, no 'filter' normalmente o array final tem menos elementos, ou é de mesmo tamanho ou de elementos a menos.
+
+    return false; // se eu fizer isso, significa que para cada produto/elemento 'p' que eu receber, ele não vai estar presente no array final, pq coloquei return false, que vai ser retornado pelo método 'filter'. ou seja, vai mostrar [], isto é, vazio. se eu retornar 'true', significa que vou ter todos os elementos q eu passei, isto é, para cada elemento que eu recebi eu filtrei 'true'.
+
+}))
+
+posso aplicar algum tipo de critério:
+console.log(produtos.filter(function(p) {
+    return p.preco > 2500;
+})); // só vai mostrar o de iPad Pro.
+
+// no map o resultado era o elemento retornado, e no filter é true ou false.
+
+// ----> Criar 2 funções para retornar apenas os produtos frágeis e os produtos que têm preço maior que 500, esses produtos vão estar na minha lista final. 1 função diz se o produto é caro e outra pra dizer se é fragil. e devemos usar o filter encadeado (igual fizemos antes com o map encadeado).
+
+const produtos = [
+    {nome: 'Notebook', preco: 2499, fragil: true},
+    {nome: 'iPad Pro', preco: 4199, fragil: true},
+    {nome: 'Copo de Vidro', preco: 12.99, fragil: true}, 
+    {nome: 'Copo de Plástico', preco: 18.99, fragil: false}
+]
+
+// Fiz assim:
+const resultado = produtos.filter(function(p) { return p.fragil == true}).filter(function(e) { return e.preco > 500});
+console.log(resultado);
+
+// Leitão fez:
+const caro = produto => produto.preco >= 500;
+const fragil = produto => produto.fragil; // subentendido q é true
+
+const resultado = produtos.filter(caro).filter(fragil);
+console.log(resultado);
+
+/////////////////////
+
+Filter #02 -
+Fazendo o filter2...
+
+///////////
+
+Reduce #01 -
+Outra forma de percorrer um array com mais propósito ainda. É uma função que serve para transformar um array em um outro array ou um array em outro numero ou um array em string, enfim, você vai definir o critério. Fato é que voce vai ter um parametro que será acumulado de chamada em chamada que vai sendo passado. O resultado de uma função reduce é sempre passado pra próxima iteração e você tem o elemento atual e no primeiro parametro vc tem o acumulador, que é passado como resposta da função anterior pra próxima. O primeiro reduce recebe os 2 primeiros elementos de um array, o elemento de indice 0 que em teoria seria o 'acumulador', e o elemento de indice 1 que é o elemento atual. Você faz algo com esses 2 elementos, e o resultado dessa função é passado pra proxima e o elemento atual faz algo e o resultado vai pra prox iteração e assim vai.
+
+const alunos = [
+    {nome: 'João', nota: 7.3, bolsista: false},
+    {nome: 'Maria', nota: 9.2, bolsista: true},
+    {nome: 'Pedro', nota: 9.8, bolsista: false},
+    {nome: 'Ana', nota: 8.7, bolsista: true}
+]
+
+console.log(alunos.map(a => a.nota)); // aq eu tenho todas as notas.
+const resultadoNew = alunos.map(a=>a.nota).reduce(function(acumulador, atual) {
+    console.log(acumulador, atual);
+    return acumulador + atual;
+}, 10);
+console.log(resultado);
+
+/\ vai me retornar, as somas, o seguinte: o acumulador é o valor inicial/valor da callback anterior, ele ta somando com o valor atual do elemento. o '10' ali, é depois da funçao, como parametro do metodo 'reduce', ele é o valor inicial, com que valor o reduce vai começar.
+
+
+/////////////////
+
+Reduce #02:
+const alunos = [
+    {nome: 'João', nota: 7.3, bolsista: false},
+    {nome: 'Maria', nota: 9.2, bolsista: true},
+    {nome: 'Pedro', nota: 9.8, bolsista: false},
+    {nome: 'Ana', nota: 8.7, bolsista: true}
+]
+// Criar função reduce que vai percorrer a lista acima e dizer se todos os alunos da lista são bolsistas ou não.
+
+// Criar função reduce q tb vai percorrer a lista e dizer se algum aluno é bolsista.
+
+-----------> Antes do reduce, geralmente faça-se o map. 
+1º desafio:
+const todosBolsistas = (resultado, bolsista) => resultado && bolsista; // todosBolsistas recebem uma função que vai ter o 'resultado', que seria o acumulador da callback anterior e o atributo 'bolsista', que é V ou F. os dois precisam ser verdadeiro. Essa função está verificando se todos os elementos do array são bolsistas. Ela retorna true se o resultado acumulado (resultado) até o momento e o elemento atual (bolsista) forem ambos verdadeiros, e false caso contrário. aqui, o 'resultado' e 'bolsista' serão executados em cada uma das iterações.
+
+console.log(alunos.map(a => a.bolsista).reduce(todosBolsistas));
+
+Desafio 2: Algum aluno é bolsista?
+const todosBolsistas = (resultado, bolsista) => resultado || bolsista; // um deles tem q ser bolsista, ou todos, ai por isso uso ||
+console.log(alunos.map(a => a.bolsista).reduce(algumBolsista)); // vai mostrar 'true', pois existe pelo menos um bolsista.
+
+/////////////////
+
+Reduce #03 -
+Explicando novamente o reduce2...
+
+///////////////
+
+
