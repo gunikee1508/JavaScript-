@@ -1631,4 +1631,172 @@ Explicando novamente o reduce2...
 
 ///////////////
 
+Imperativo vs Declarativo -
+temos 2 tipos de abordagens: imperativa e a declarativa
+const alunos = [
+    {nome: 'João', nota: 7.9},
+    {nome: 'Maria', nota: 9.2}
+];
 
+// Imperativo:
+let total1 = 0;
+for(let i=0; i < alunos.length; i++) {
+    total1 += alunos[i].nota;
+}
+
+console.log(total1 / alunos.length);
+
+// Declarativo
+const alunos = [
+    {nome: 'João', nota: 7.9},
+    {nome: 'Maria', nota: 9.2}
+];
+const getNota = aluno => aluno.nota;
+const soma = (total, atual) => total + atual;
+const total2 = alunos.map(getNota).reduce(soma); // mapeie as notas de aluno e no final agregue/junta tudo a soma (reduce).
+console.log(total2 / alunos.length);
+
+/\ a forma declarativa é melhor, pois vc tem mais reuso em declarativo.
+No imperativo é exatamente a forma como tem que ser sem deixar nenhum detalhe faltando, vc diz a forma como é feita passo a passo. com a abordagem declarativa, vc se importa mais com oq tem q ser feito do que o como.
+
+//////////////////
+
+Concat -
+Método em que a ideia é q voce consiga concatenar vários arrays em um unico array ou vários elementos que voce pode passar como parametro pra um metodo concat ou outros arrays.
+
+const filhas = ['Ualeskah', 'Cibalena'];
+const filhos = ['Uoxiton', 'Uesclei'];
+const todos = filhas.concat(filhos, 'Fulano');
+console.log(todos, filhas, filhos); // 'todos' vai juntar os elementos dos arrays filhas e filhos e vai deixar em um array só.
+
+console.log([].concat([1,2], [3,4], 5, [[6, 7]])); -> o [] é um array vazio, q é um objeto, e por ser objeto posso usar o . pra chamar métodos. vai mostrar: [ 1, 2, 3, 4, 5, [ 6, 7 ] ].  somente 6 e 7 ficarão em um array dentro de um array.
+se fosse console.log(['a,b'].concat([1,2], [3,4], 5, [[6, 7]])); // iria mostrar dentro do array começando com 'a' e 'b'.
+
+//////////////////////
+
+FlatMap -
+vejamos com flatmap:
+const escola = [{
+    nome: 'Turma M1',
+    alunos: [{
+        nome: 'Gustavo',
+        nota: 8.1
+    }, {
+        nome: 'Ana',
+        nota: 9.3
+    }]
+}, {
+    nome: 'Turma M2', 
+    alunos: [{
+        nome: 'Rebeca',
+        nota: 8.9,
+    }, {
+        nome: 'Roberto',
+        nota: 7.3
+    }]
+}]
+
+// 'escola' é um array formado por objetos que representam a turma. dentro da turma, tenho a lista de alunos.
+
+const getNotaDoAluno = aluno => aluno.nota;
+const getNotasDaTurma = turma => turma.alunos.map(getNotaDoAluno);]
+
+const notas1 = escola.map(getNotasDaTurma);
+console.log(notas1);
+
+se eu der:
+console.log([].concat([8.1, 9.3], [8.9, 7.3])); // vai mostrar um unico array, a ideia do flatMap é exatamente esse.
+
+Array.prototype.flatMap = function(callback) { // aqui alem de fazer o proprio map, farei um concat também.
+    return Array.prototype.concat.apply([], this.map(callback));
+}
+
+// a ideia do FlatMap é basicamente voce ter uma matriz, vc achatar ele e ter um unico array. 
+const notas2 = escola.flatMap(getNotasDaTurma);
+console.log(notas2);
+
+///////////////
+
+Node JS:
+Construir sistemas inteiros com JavaScript. JS é a linguagem q te da a possibilidade de rodar no browser e no servidor. Node dá a possibilidade de executar JS em servidor, no back-end...
+
+//////////////
+
+Conceito de módulos NodeJS-
+como organizar uma aplicação em javascript? depende se vai ser em browser ou back-end.
+No caso de back-end, não preciso me preocupar em compactar vários arquivos em um arquivo, pois vai ser executado direto no servidor.
+Dentro do node, um arquivo representa um módulo. O node pode ser apache, servidor web, prover um video, etc, ou ele pode servir como API do seu sistema.
+Módulo tem uma certa interioridade, ele não deixa tudo aquilo que voce escreve dentro dele disponivel pra todo mundo, ele fica visivel apenas dentro do modulo. Para escrever algo no node e tornar publico/disponivel para outro arquivo, irá precisar exportar. Para exportar tem diversas formas, tem 2 padrões disponiveis.
+
+Vejamos algumas formas de exportar algo de dentro do node para outro arquivo:
+this.ola = 'Fala Pessoal'; // já posso usar essa fala em outro arquivo.
+
+// Outra forma de exportar:
+exports.bemVindo = 'Bem vindo ao Node!';
+
+// Outra forma de exportar:
+module.exports.ateLogo = 'Até próximo exemplo';
+
+
+// Outra forma de exportar e com bem mais frequencia é voce setando e atribuindo diretamente um objeto a ele. Criemos outro arquivo:
+module.exports = { // colocando um objeto e dentro coloco atributos.
+    bomDia: 'Bom Dia',
+    boaNoite() {
+        return 'Boa Noite!';
+    }
+}
+
+// Agora criamos um outro arquivo chamado moduloCliente. No curso, sempre q uma classe termina com 'cliente', significa que essa classe vai usar outros modulos:
+Pra importar algo usando CommonJS, q é o sistema de modulos no Node, vc usa Require:
+
+// Dentro do arquivo moduloCliente.js
+const moduloA = require('./moduloA'); // ./ pois estou referenciando ao modulo que está presente no mesmo diretorio do arquivo tal, aí é o caminho relativo.
+const moduloB = require('./moduloB'); // perceba que não necessariamente precisei colocar a extensão do arquivo .js , é opcional
+console.log(moduloA.ola + ' , ' + moduloA.bemVindo + ' , ' + moduloA.ateLogo + ' ,  ' + moduloB.boaNoite() + ' , ' + moduloB.bomDia);
+
+/\ os codigos que existem dentro de moduloA e moduloB agora estão dentro da constante moduloA e moduloB
+
+///////////
+
+Usando módulos de terceiros - 
+Temos o 'npm'. npm é o gerenciador de pacotes do node. Ele é o responsável por baixar certas bibliotecas de terceiros, se quiser baixar angular, jquery, qualquer um. 
+ao digitar 'npm i lodash', ele baixa uma pasta chamada 'node_modules', onde dentro terão os modulos instalados, no caso, vai mostrar o diretorio do 'lodash'.
+
+----> como fazer pra subir algo pro github com a pasta node_modules sendo ignorada?
+crie um arquivo chamado .gitignore e dentro escrevo "node_modules", q basicamente vão ignorar a pasta node_modules
+
+crio um arquivo chamado usandoModulosTerceiros.js, e vou criar uma referencia para lodash:
+const _ = require('lodash'); // coloquei _ pq é normal colocar _ quando se referencia a uma biblioteca. dentro do require coloco o modulo que tá requerendo. não coloquei o caminho relativo aqui, pois ele já procura automaticamente dentro de node_modules.
+ 
+setInterval(() => console.log(_.random(1,1000)), 2000);
+
+// dentro de usandoModulosTerceiros eu vou instalar uma dependencia chamada nodemon
+dou cd pra onde ta a pasta usandoModulosTerceiros agora e digito:
+
+nodemon usandoModulosTerceiros.js
+// /\ começará a rodar normalmente. sempre q mexer no codigo e salvar, o compilador vai alterar automaticamente.
+
+//////////////
+
+Sistema de modulos require-
+vamos usar a função 'require' pra acessar o moduloA. cria-se uma pasta A e dentro cria-se pasta B e dentro cria arquivo 'acessarModulos.js', dentro dela escrevo o codigo:
+const moduloA = require('../../moduloA'); // se colocar 'moduloa', não vai dar erro, mas pq o moduloa em windows ele não tem case sensitive, no linux ele tem, portanto sempre coloque o nome exatamente como é do arquivo.
+console.log(moduloA.ola);
+
+se eu coloco:
+const saudacao = require('saudacao'); // basta ter o diretorio 'saudacao' dentro da pasta node_modules, ele reconhecerá automaticamente. tem-se que ter o  arquivo'index.js'. 
+console.log(saudacao.ola); // vai mostrar o que tiver de module.exports dentro do index do diretorio 'saudacao'.
+
+// temos modulos que já vem previamente instalados pelo node, vejamos o modulo http:
+const http = require('http');
+http.createServer((req, res) => {
+    res.write('Bom dia!');
+    res.end();
+}).listen(8080); 
+// ao executar e botar no navegador localhost/8080 , vai mostrar 'Bom dia'.
+
+// posso fazer assim se eu quiser referenciar o index de uma pasta sem escrever o index:
+const c = require('./pastaC'); // não preciso escrever index, irá procurar pelo arquivo index já pelo padrão index.
+console.log(c.ola);
+
+// /\ irá imprimir o que tem em 'this.ola'
