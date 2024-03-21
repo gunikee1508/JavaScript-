@@ -1800,3 +1800,109 @@ const c = require('./pastaC'); // não preciso escrever index, irá procurar pel
 console.log(c.ola);
 
 // /\ irá imprimir o que tem em 'this.ola'
+
+/////////////////////////
+
+Sistema de módulos: Exports- 
+
+Já vimos que dentro do módulo do node, temos o 'this', q é uma referencia para module.exports, ou seja, module.exports === this (é true), assim como module.exports === exports (true, pq é uma outra forma de exportar).
+
+this.a = 1;
+exports.b = 2;
+module.exports.c = 3;
+
+exports = null;
+console.log(module.exports);
+
+exports = {
+    nome: 'Teste';
+}
+
+console.log(module.exports); // irá imprimir ainda {a: 1, b: 2, c: 3}, mesmo que voce tenha mudado a referencia 2 vezes, isto é, em exports = null e depois em exports = { nome 'teste'}
+
+// ou seja, se voce quiser que um objeto seja exportado, não use exports, use module.exports. sempre que precisar atribuir um novo objeto para ser exportado, obrigatoriamente deve-se usar module.exports.
+
+module.exports = {publico: true}; // no final, em outro arquivo se eu usar require no arquivo em que está esta linha de codigo, irá imprimir isto {publico: true}
+
+o this e o exports são apenas 2 referencias para um mesmo objeto que o module.exports aponta.
+
+/////////////
+
+Arquivo package.json - 
+É o arquivo descritor de um projeto em node, para criá-lo, va a um diretorio que voce queira e digite no terminal: npm init, e nele vao aparecer perguntas pra responder. caso queira que seja tudo automatico, use npm init -y.
+npm i -> instala as dependencias, se vc colocar npm i --save, alem de instalar as dependencias na pasta node_modules, ele vai criar uma area pra colocar as dependencias do seu projeto. 
+ex: npm i --save axios
+
+se eu digitasse:
+npm i --save-dev axios@0.17.1 -E , significa: 'i'(ou install), --save-dev significa que vai ter dependencia somente necessaria em desenvolvimento, não é necessaria durante a produção, então por ex poderia instalar uma dependencia de testes, depois é o nome da dependencia, o @ e a versão, e o -E significa é instalar exatamente essa versão.
+no package.json, verá que tem, por ex:  "axios": "^1.6.8", ou  "axios": "~1.6.8". a diferença: ^ permite atualizaçao maiores, por ex, 1.8.2, desde q nao quebre compatibilidade. já o ~ permite apenas atualizaçoes de correçao, por ex, 1.6.9, não permitindo, por ex, 1.7.0.
+
+vamos criar um outro arquivo chamado funcionarios.js dentro da pasta 'funcionarios.js':
+const url = 'http://files.cod3r.com.br/curso-js/funcionarios.json';
+const axios = require('axios');
+
+axios.get(url).then(response => {
+    const funcionarios = response.data; // aqui vou ter a lista de funcionarios
+    console.log(funcionarios); // vai mostrar todos os objetos de funcionarios.
+}); // método get obtém informaçoes do servidor. aqui, quando a requisiçao retornar a url, ele vai chamar o metodo then
+
+// dentro os funcionarios, pegar a chinesa com menor salario.
+
+const chineses = f => f.pais === 'China';
+const mulheres = f => f.genero === 'F';
+// agora, faremos o Reduce:
+const menorSalario = (func, funcAtual) => { // o primeiro parametro é o acumulador e o segundo parametro é o elemento atual, no caso aqui, o 1o parametro é o funcionario e o 2o parametro é o funcionario atual. o acumulador é um funcionario, pq no final quero retornar um funcionario.
+    return func.salario < funcAtual.salario ? func : funcAtual;
+}
+
+agora, dentro do axios:
+const func = funcionarios.filter(chineses).filter(mulheres).reduce(menorSalario);
+console.log(func);
+
+//////////////
+
+Instância única vs Nova instância -
+
+O node faz cache de modulos que sao importados pelo REQUIRE. Uma forma de driblar isso dentro do node é usando a função factory.
+
+- Num arquivo chamado instanciaUnica.js:
+module.exports = {
+    valor: 1,
+    inc() {
+        this.valor++; // é um método de incrementar o this.valor 
+    }
+}
+
+/\ esse objeto que representa um contador bem simples, ele terá uma instância única, pois o Node faz cache dos módulos, isto é, mantem as instancias como sendo singleton.
+
+- Agora crio arquivo instanciaNova.js:
+Como faço para fazer uma nova instancia agora já que o Node por padrão coloca um cache? Coloquemos uma factory.
+module.exports = () {
+    return {
+        valor: 1,
+        inc() {
+            this.valor++;
+        }
+    }
+}
+
+- Agora, outro arquivo chamado instanciaCliente.js:
+const contadorA = require('./instanciaUnica);
+const contadorB = require('./instanciaUnica'); // tanto o contadorA quanto o contadorB compartilham do mesmo objeto retornado
+
+const contadorC = require('./instanciaNova')(); // No caso, perceba que instanciaNova retorna uma função.
+
+// Pra eu ter acesso acesso ao objeto que de fato representa meu contador, tenho que: dentro de instanciaCliente, preciso chamar, no caso ali, chamei colocando (), ou seja, retornando um objeto, invocando a função retornada. 
+
+const contadorD = require('./instanciaNova')();
+
+contadorA.inc();
+contadorA.inc();
+console.log(contadorB.valor); // vai mostrar '3', incrementou
+
+/\ // vai mudar pois o Node faz cache dos objetos retornados, isto é, daquilo q é retornado a partir do Require. Então oq eu fizer no contador A, o contadorB tb vai saber. Foi percebido em contadorB devido ao incremento que fiz no contadorA.
+
+contadorC.inc();
+contadorC.inc();
+console.log(contadorD.valor); // aí vai mostrar apenas '1', não mostra 3, isto é, não incremetou. O que fizer no C, não reflete no D, pois com o factory você dribla o cache.
+
