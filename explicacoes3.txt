@@ -1906,3 +1906,234 @@ contadorC.inc();
 contadorC.inc();
 console.log(contadorD.valor); // aí vai mostrar apenas '1', não mostra 3, isto é, não incremetou. O que fizer no C, não reflete no D, pois com o factory você dribla o cache.
 
+
+///////////////////
+
+Objeto global no node -
+
+
+Arquivo 'global.js':
+O ideal é evitar usar o 'global' diretamente como objeto.
+global.minhaApp = {
+    saudacao() { // quando isso for de fato adicionado ao global, qualquer outro arquivo do seu sistema terá acesso ao 'minhaApp'
+        return 'Estou em todos os lugares!';
+    },
+    nome: 'Sistema Legal'
+}
+
+Arquivo globalCliente.js:
+preciso importar o global.js diretamente:
+require('./global');
+
+console.log(MinhaApp.saudacao()); // irá mostrar 'estou em todos os lugares!'
+
+posso mudar o 'nome' pelo 'minhaApp', o que não é muito ideal:
+minhaApp.nome = 'Eita!';
+console.log(MinhaApp.nome); // o objeto ficou passivel de ser modificado, vai mostrar 'Eita!'
+/\ // para consertar isso, eu poderia dar um Object.freeze:
+global.minhaApp = Object.freeze({
+    saudacao() {
+        return 'Estou em todos os lugares!'
+    },
+    nome: 'Sistema Legal'
+})
+/\ congelei o objeto, agr n consigo mais modifica-lo.
+
+//////////////
+
+Entendendo o 'This':
+O this aponta para module.exports, pode exportar algo sim usando o 'this'.
+console.log(this === global); // é false, pois this aponta para module exports, não pra global.
+
+- Dentro de função, o this não aponta para exports.
+fuinction logThis() {
+    console.log(this === exports); // retornará false
+}
+porém fora da função, aponta sim para exports. console.log(this === exports); // retornará true.
+
+this.perigo = 'Olá'; // dentro de função, o this aponta para global.
+this.perigo = 'Olá'; // fora de função, o this aponta para module.exports, não para global.
+
+//////////////
+
+Passando parametros entre módulos -
+Se um módulo retorna uma função, voce pode invocar essa função passando os parametros, e o que tiver dentro será executado. E assim que voce passa parametro de um modulo para outro.
+
+arquivo passandoParametros.js -
+module.exports = function(...nomes) {
+    return nomes.map(nome => `Boa semana ${nome}`);
+}
+
+arquivo passandoParametrosCliente.js:
+const saudacoes = require('./passandoParametros')('Ana', 'Lucas', 'João');
+console.log(saudacoes); // vai transformar os 3 parametros em uma lista de saudações.
+
+A passagem de parametros é simplesmnete colocando uma função e os parametros da função será equivalente aos parametros do módulo.
+
+//////////
+
+Instalando dependencias e scripts:
+no arquivo package.json:
+{
+  "name": "funcionarios",
+  "version": "1.0.0",
+  "description": "fdfsfsdsdfdsfdfsdfsds",
+  "main": "funcionarios.js",
+  "scripts": {
+    "start": "nodemon",
+    "dev":"nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8"
+  }
+}
+
+// /\ o 'start: nodemon' eu coloquei, posso colocar o nome do arquivo que quero iniciar explicitamente, mas no caso não precisei, pq ele vai procurar pelo 'main', que é funcionarios.js
+
+basta digitar no terminal, agora: nodemon start, q vai iniciar o funcionarios.js
+o 'start' é um script padrão do node, o 'test' tbm é um script padrão do node, mas não coloquei. o 'dev' não é um script padrão do dev, se eu usar 'npm run dev' é mais pra executar em ambiente de desenvolvimento, enfim.
+
+comando no terminal 'npm i' recria toda a pasta node_modules para você.
+
+/////////////////
+
+Lendo arquivos node-
+Dentro do node temos o módulo de filesystem. Esse modulo é responsavel por ler e escrever, etc.
+Vamos criar novo arquivo dentro da pasta 'node', chamado:
+
+arquivo.json -
+{
+    "db":{
+        "host": "localhost",
+        "port": 5432,
+        "user": "root",
+        "pass": "12345"
+    }
+}
+
+Crio outro arquivo chamado 'arquivoLeitura.js':
+const fs = require('fs');
+const caminho = __dirname + '/arquivo.json';
+
+// sincrono... vai ler o arquivo todo pra fazer algo
+const conteudo = fs.readFileSync(caminho, 'utf-8'); // aqui ESTE é o comando pra ler o arquivo de forma sincrona. se for um arquivo grande vai 'travar' até ler o arquivo. passo o caminho que eu quero q ele leia, e o encoding, quero no enconding utf-8. o arquivo.json foi feito usando utf-8, entao na hora de ler tbm precisa ser utf-8.
+
+// assincrono... manda uma callback q qd o arquivo tiver carregado ela vai ser disparada de volta.
+fs.readFile(caminho, 'utf-8', (err, conteudo) => {
+    const config = JSON.parse(conteudo); // se eu colocasse só ' = conteudo ', iria dar erro, pq é uma string, então tenho q usar JSON.parse, que converte string em objeto json.
+
+    console.log(`${config.db.host}:${config.db.port}`); // vai pegar o valor do host e da porta e imprimir.
+}); // em vez de receber como resposta do metodo o conteudo, eu vou passar uma callback e nela, qd tiver lido o arquivo, vai chamar a callback pra fazer os tratamentos que deseja em cima do conteudo do arquivo. 1º elemento da callback é o erro, e o 2o é o conteudo do arquivo 
+
+// para o formato json especificamente, tem um jeito mt mais facil de ler json:
+const config = require('./arquivo.json');
+console.log(config.db); // nem preciso usar json.parse pq ele ja vai me trazer um objeto instanciado
+
+// Leitura de uma pasta:
+fs.readdir(__dirname, (err, arquivos) => {
+    console.log('Conteudo da pasta...');
+    console.log(arquivos);
+
+})
+
+// ----------> A constante __dirname está presente em todos os modulos do node que representa o diretorio atual.
+
+//////////
+
+Escrevendo arquivos usando node -
+Novo arquivo dentro da pasta 'node':
+arquivoEscrita.js:
+const fs = require('fs');
+
+const produto = {
+    nome: 'Celular',
+    preco: 1249.99,
+    desconto: 0.15
+}
+
+fs.writeFile(__dirname + '/arquivoGerado.json', JSON.stringify(produto), err => {
+    console.log(err || 'Arquivo Salvo!'); // se o arquivo estiver nulo, significa que ele salvou certinho, entao imprimo 'arquivo salvo' se true. 
+}); stringify é o conteudo que quero de fato persistir no arquivo, no caso, é conversao do meu objeto para o formato textual JSON, e depois passo a callback que vai receber apenas como resposta o erro.
+
+// ao compilar, vai gerar um arquivo chamado 'arquivoGerado.json' com o objeto produto.
+
+////////////////////////
+
+Frameworks web -
+lodash é exemplo de uma biblioteca pronta com funcionalidades pra ser usadas. biblioteca é diferente de framework. um framework é algo que estrutura sua aplicação, dá uma base para que em cima daquela estrutura vc consiga desenvolver seguindo os preceitos que o framework oferece. 
+framework é algo que vc constroi sua aplicação em cima dele. ele dá a estrutura basica pra vc fazer sua aplicaçao ou pelo menos parte da aplicaçao. 
+
+///////////
+
+Padrão Middleware #1-
+Temos o padrão middleware (é o Chain of Responsibility). Temos o framework expressJS, q é um framework back-end, e o padrão Middleware é bem baseado nele. O padrão Chain of Responsibility não existe um acoplamento do proximo passo, o passo é independente. Se o middleware nao quiser passar pro proximo passo, basta nao invocar a função next() (pra ir pro proximo middleware). A ordem dos passos não importa, o middleware B poderia vir primeiro que o primeiro que o middleware A, etc. Não há uma dependencia entre os passos. Se não quiser disparar o proximo passo, vc não chama o next() e a cadeia é interrompida naquele passo.
+
+////////////////////////
+
+Middlewares.js -
+const passo1 = (ctx, next) => { // o primeiro parametro é o 'contexto'(ctx), é um objeto que vai ser passado de um passo para outro, de um middleware para o outro. é o objeto que carrega os dados de um passo pro outro. o 2o parametro é uma funçao q quando chamada, vai disparar o proximo passo na cadeia.
+    ctx.valor1 = 'mid1'; // so pra marcar pra dizer que ele passou por esse passo.
+    next();
+}
+
+const passo2 = (ctx, next) => {
+    ctx.valor2 = 'mid2';
+    next();
+}
+
+const passo3 = ctx => ctx.valor3 = 'mid3';
+
+const exec = (ctx, ...middlewares) => { // ...middlewares é um conjunto de funçoes middlewares, '...' é o operador rest, onde a ideia é passar varias funçoes e ele junta isso dentro de um array, e dentro da funçao tenho um array chamado middlewares.
+    const execPasso = indice => { // a cada um dos passos eu vou passar o 'indice' que eu quero executar, passa pelo array ...middlewares e pega o indice tal e executa ela.
+        middlewares && indice < middlewares.length && // tenho q verificar: se o middleware está setado(é true) e se o indice é menor que o tamanho do middlewares
+             middlewares[indice](ctx, () => execPasso(indice + 1))
+    }
+    execPasso(0);
+}
+
+
+const ctx = {};
+exec(ctx, passo1, passo2, passo3);
+console.log(ctx);
+/\ // vai mostrar normal, é independente, posso botar so passo2 e passo3, etc.
+agora, se eu dou:
+const ctx = {};
+exec(ctx, passo3, passo1, passo2);
+console.log(ctx);
+/\ // vai mostrar somente passo3, pq ele não chama o next;.
+
+//////////////
+
+Apenas um processo pode executar em uma porta. Um pc quer fazer requisiçao pra outro notebook, mas eu só tenho o IP do notebook, mas no notebook tem as aplicações skype, apache, etc, basta usar a porta para dizer qual aplicação de fato usar.
+
+const sequence = {
+    _id = 1,
+    get id() { return this._id++}
+}
+
+const produtos = {}
+
+function salvarProduto(produto) {
+    if(!produto.id) produto.id = sequence.id // se o objeto produto NÃO tiver uma propriedade id definida, então ele faz uma propriedade 'id' recebendo o mesmo valor de 'id' do objeto 'sequence'.
+    produtos[produto.id] = produto;
+}
+
+function getProduto(id) {
+    return produtos[id] || {} // caso esteja nulo ou undefined, isto é, se for false, ele retorna vazio. se for true retorna produtos[id]
+}
+
+function getProdutos() {
+    return Object.values(produtos);
+}
+
+module.exports = { salvarProduto, getProduto, getProdutos }; // fazendo isso para exportar para fora do arquivo
+
+////////////
+
+Object process node.js -
+
+const anonimo = process.argv.indexOf('-a') !== -1;
+......
