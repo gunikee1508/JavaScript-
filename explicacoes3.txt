@@ -2137,3 +2137,99 @@ Object process node.js -
 
 const anonimo = process.argv.indexOf('-a') !== -1;
 ......
+
+ESNext -
+
+ESNext é de EcmaScript, q é o nome oficial do JavaScript
+O let tem escopo de globo. 
+{
+    var a = 2
+    let b = 3
+}
+console.log(a); // deu certo
+console.log(b); // erro
+
+Template string - considera-se quebra de linha, etc, oq for escrito nele será interpretado.
+
+Operador destructuring:
+desestruturar as coisas a partir do operador destructuring.
+const [l, e, ...tras] = "Cod3r"; // a letra 'c' será 'l', 'o' será 'e', e o resto será 'tras', irá mudar as letras.
+console.log(l, e, tras); // vai mostrar C o [ 'd', 'r', 'r'] // um array q representa cada uma das letras
+
+const [x, , y] = [1, 2, 3]
+console.log(x, y);
+
+const { idade: i, nome } = { nome: 'Ana', idade: 9 }; // renomeei 'idade'
+console.log(i, nome); 
+
+-- // Operador rest
+function total(...numeros) { // esse é o operador rest, ele agrupa todos os elementos passados em um array
+    let total = 0;
+    numeros.forEach(n => total+= n);
+    return total;
+}
+console.log(total(2,3,4,5));
+
+// Melhorias na notação literal de objeto:
+const nome = 'Carla';
+const pessoa = {
+    nome,
+    ola() {
+        return 'Oi gente!';
+    }
+}
+
+///////////
+
+Operador Rest/Spread -
+Você pode usá-lo para juntar tudo (rest) em um grupamento ou pode espalhar (spread).
+
+// Usar spread com objeto:
+const funcionario = { nome: 'Maria', salario: 12348.99}
+const clone = { ativo: true, ...funcionario} // aqui, significa q to espalhando todos os atributos de 'funcionario' dentro do meu objeto 'clone'
+console.log(clone);
+
+// Usar spread com array:
+const grupoA = ['João', 'Pedro', 'Gloria'];
+const grupoFinal = ['Maria', 'Rafaela', ...grupoA, 'Rafaela'];
+console.log(grupoFinal);
+
+///////////////
+
+Tagged Template #01 - 
+Processar template string dentro de uma função.
+
+function tag(partes, ...valores) {
+    console.log(partes);
+    console.log(valores);
+    return 'Outra String';
+}
+
+const aluno = 'Gui';
+const situacao = 'Aprovado';
+console.log(tag `${aluno} está ${situacao}`);
+
+// irá mostrar [ '', ' está ', '' ]
+[ 'Gui', 'Aprovado' ]
+Outra String
+
+ele tá passando a template string `${aluno} está ${situacao}` pra função 'tag' delimitando as partes e os valores é ('Gui' e 'Aprovado')
+
+///////////
+
+Tagget templates #2 -
+
+remontando a string inteira.
+
+function real(partes, ...valores) {
+    const resultado = [];
+    valores.forEach((Valor,indice) => {
+        valor = isNaN(valor) ? valor : `R${valor.toFixed(2)}`;
+        resultado.push(partes[indice], valor);
+    })
+    return resultado.join(''); // vai pegar todos os elementos do resultado e gerar string no geral.
+}
+
+const preco = 29.9;
+const precoParcela = 11;
+console.log(real `1x de ${preco} ou 3x de ${precoParcela}.`);

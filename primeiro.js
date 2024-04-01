@@ -950,3 +950,17 @@ const contaDeLuz = new Lancamento('Luz', -220);
 const contas = new CicloFinanceiro(6, 2018);
 contas.addLancamentos(salario, contaDeLuz);
 console.log(contas.sumario());
+
+const grupoA = ['João', 'Pedro', 'Gloria'];
+const grupoFinal = ['Maria', 'Rafaela', ...grupoA, 'Rafaela'];
+console.log(grupoFinal);
+
+function tag(partes, ...valores) {
+    console.log(partes);
+    console.log(valores);
+    return 'Outra String';
+}
+
+const aluno = 'Gui';
+const situacao = 'Aprovado';
+console.log(tag `${aluno} está ${situacao}`);
