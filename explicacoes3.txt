@@ -112,7 +112,7 @@ const notas = [6.7, 7.4, 8.3, 7.7];
 
 // o FOR IN vai te dar os indices do elemento, como se fosse te dar os atributos de um array (ex.: o 1 elemento do array é 0, o 2 elemento do arary é 1). foreach é melhor.
 
-for (let i in notas) // para cada um dos elementos de notas vai te devolver um indice 'i'. bom usar 'let' para garantir que 'i' estará apenas naquele laço, isto é, variavel local daquele laço, presente apenas neste escopo.
+for (let i in notas) // para cada um dos elementos de 'notas' vai te devolver um indice 'i'. bom usar 'let' para garantir que 'i' estará apenas naquele laço, isto é, variavel local daquele laço, presente apenas neste escopo.
 {
     console.log(i, notas[i]); // vai mostrar os indices e o que há dentro de cada índice
 } 
@@ -2223,7 +2223,7 @@ remontando a string inteira.
 
 function real(partes, ...valores) {
     const resultado = [];
-    valores.forEach((Valor,indice) => {
+    valores.forEach((valor,indice) => {
         valor = isNaN(valor) ? valor : `R${valor.toFixed(2)}`;
         resultado.push(partes[indice], valor);
     })
@@ -2233,3 +2233,120 @@ function real(partes, ...valores) {
 const preco = 29.9;
 const precoParcela = 11;
 console.log(real `1x de ${preco} ou 3x de ${precoParcela}.`);
+
+//////////////////
+
+Map JavaScript -
+ja temos no javascript estrutura chave-valor, mas no caso aqui foi adicionado uma nova estrutura, o Map. No caso do objeto a chave é apenas um literal/string, e no Map vc pode ter a chave como sendo funçao, numero, objeto, etc.
+
+const tecnologias = new Map();
+tecnologias.set('react', {framework: false}); // react é o valor da chave
+tecnologias.set('angular', { framework: true});
+
+console.log(tecnologias.get('react')); // no caso, pra obter o valor tem q passar desse jeito.
+se quiser obter so o valor de 'framework', usamos:
+console.log(tecnologias.get('react').framework);
+
+// adicionando estrutura chave valor:
+const chavesVariadas = new Map([
+    [function () { }, 'Função'],
+    [{}, 'Objeto'],
+    [123, 'Número'],
+]);
+
+chavesVariadas.forEach((vl, ch) => {
+    console.log(ch, vl);
+})
+
+console.log(chavesVariadas.has(123)); // vai mostrar 'true'
+chavesVariadas.delete(123);
+console.log(chavesVariadas.has(123)); // agora mostrará 'false'.
+console.log(chavesVariadas.size);
+
+chavesVariadas.set(123, 'a');
+chavesVariadas.set(123, 'b');
+console.log(chavesVariadas.123); // vai mostrar 123 com valor 'b'.
+
+//////////////////
+
+Estrutura set:
+Estrutura de conjunto, não indexada e não aceita repetição. No caso objeto tb é uma estrutura indexada, não com numeros, mas sim com textos, mas tem como pegar um atributo a partir de um indice. No caso do 'Set', é um conjunto não indexado que não aceita repetição.
+
+const times = new Set();
+times.add('Vasco');
+times.add('São Paulo').add('Palmeiras').add('Corinthians');
+times.add('Flamengo');
+times.add('Vasco');
+
+console.log(times);
+console.log(times.size); // mostrar tamanho de 'times'.
+console.log(times.has('Vasco')); // mostrará 'true'. se fosse 'vasco' mostrará false.
+
+// criando um array tradicional
+const nomes = ['Raquel, 'Lucas', 'Julia', 'Lucas'];
+const nomesSet = new Set(nomes); // passando um array, então e o resultado será um Set com repetiçoes retiradas.
+console.log(nomesSet); // não irá mostrar as repetições, uma vez que o 'Set' não aceita repetições.
+
+/////////////////
+
+For Of -
+Novo laço: 
+O 'For In' itera em cima de índice, o 'for Of' itera em cima de valores, sendo mais interessante. Vc pode iterar em cima de map, set, string, array, objeto,  etc; 
+
+for (let letra of "Cod3r") {
+    console.log(letra);
+}
+
+const assuntosEcma = ['Map', 'Set', 'Promise'];
+
+for (let i in assuntosEcma) {
+    console.log(i); // vai mostrar os índices, pq o for in percorre em cima de indices, no caso 0, 1 e 2.
+}
+
+for (let assuntoEcma of assuntosEcma) {
+    console.log(assuntoEcma); // vai mostrar 'Map', 'set' e 'promise', pq ele percorre em cima dos valores.
+}
+
+const assuntosMap = new Map([
+    ['Map', { abordado: true}],
+    ['Set', { abordado: true}],
+    ['Promise', { abordado: false}]
+])
+
+for (let assunto of assuntosMap) {
+    console.log(assunto); // mostrando os arrays   
+}
+
+for (let chave of assuntosMap.keys()) {
+    console.log(chave); // mostra somente as chaves: map, set e promise.
+}
+
+for (let valor of assuntosMap.values()) {
+    console.log(valor); // mostra somente os valores. { abordado: true}, { abordado: true}, { abordado: false}
+}
+
+for (let [ch, vl] of assuntosMap.entries()) { // iterar sobre as entradas (um par de chave e valor)
+    console.log(ch, vl);
+}   
+ou outra possibilidade de mostrar as entradas, isto é, par chave valor:
+for (let [c,v] of assuntosMap) {
+    console.log(c, v);
+}
+
+const s = new Set(['a', 'b', 'c']) 
+for (let letra of s) {
+    console.log(letra); // mostra somente a chave 'a', 'b' e 'c'
+}
+
+//////////////
+
+Promises -
+Usa-se quando quer ter algum tipo de processamento assincrono. A promessa pode ser atendida ou rejeitada.
+
+function falarDepoisDe(segundos, frase) { // 1o parametro é o tempo q eu quero que espere, e o 2o é a frase q quero q seja impressa no console.
+    return new Promise((resolve, reject) => { // o 'resolve' vai ser uma função de callback que vai ser chamada quando a promessa for atendida. o parametro 'reject' é quando quiser rejeitar.
+        setTimeOut(() => {
+            resolve(frase)
+        }, segundos * 1000) // multiplicado em 1000 pra eu ter os segundos
+    })
+}
