@@ -964,3 +964,102 @@ function tag(partes, ...valores) {
 const aluno = 'Gui';
 const situacao = 'Aprovado';
 console.log(tag `${aluno} está ${situacao}`);
+
+const [x, , y] = [1, 2, 3]
+console.log(x, y);
+
+function real(partes, ...valores) {
+    const resultado = [];
+    valores.forEach((valor,indice) => {
+        valor = isNaN(valor) ? valor : `R${valor.toFixed(2)}`;
+        resultado.push(partes[indice], valor);
+    })
+    return resultado.join(''); // vai pegar todos os elementos do resultado e gerar string no geral.
+}
+
+const preco = 29.9;
+const precoParcela = 11;
+console.log(real `1x de ${preco} ou 3x de ${precoParcela}.`);
+
+const tecnologias = new Map();
+tecnologias.set('react', {framework: false}); // react é o valor da chave
+tecnologias.set('angular', { framework: true});
+
+console.log(tecnologias.get('react'));
+
+
+
+const chavesVariadas = new Map([
+    [function () { }, 'Função'],
+    [{}, 'Objeto'],
+    [123, 'Número'],
+]);
+
+chavesVariadas.forEach((vl, ch) => {
+    console.log(ch, vl);
+})
+
+console.log(chavesVariadas.has(123));
+chavesVariadas.delete(123);
+console.log(chavesVariadas.has(123));
+console.log(chavesVariadas.size);
+
+chavesVariadas.set(123, 'a');
+chavesVariadas.set(123, 'b');
+console.log(chavesVariadas);
+
+const times = new Set();
+times.add('Vasco');
+times.add('São Paulo').add('Palmeiras').add('Corinthians');
+times.add('Flamengo');
+times.add('Vasco');
+
+console.log(times);
+console.log(times.size);
+console.log(times.has('Vasco'));
+times.delete('Flamengo');
+console.log(times.has('Flamengo'));
+
+for (let letra of "Cod3r") {
+    console.log(letra);
+}
+
+const assuntosMap = new Map([
+    ['Map', { abordado: true}],
+    ['Set', { abordado: true}],
+    ['Promise', { abordado: false}]
+])
+
+for (let assunto of assuntosMap) {
+    console.log(assunto); // mostrando os arrays   
+}
+
+for (let chave of assuntosMap.keys()) {
+    console.log(chave); // mostra somente as chaves.
+}
+
+for (let valor of assuntosMap.values()) {
+    console.log(valor);
+}
+
+for (let [ch, vl] of assuntosMap.entries()) {
+    console.log(ch, vl);
+}   
+
+const s = new Set(['a', 'b', 'c']) 
+for (let letra of s) {
+    console.log(s);
+}
+
+function falarDepoisDe(segundos, frase) { 
+    return new Promise((resolve, reject) => { 
+        setTimeout(() => {
+            resolve(frase)
+        }, segundos * 1000) 
+    })
+}
+
+falarDepoisDe(3, 'Que Legal!')
+    .then(frase => frase.concat('?!?!'))
+    .then(outraFrase => console.log(outraFrase))
+    .catch(e => console.log(e))

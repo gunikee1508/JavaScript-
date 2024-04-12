@@ -2345,8 +2345,18 @@ Usa-se quando quer ter algum tipo de processamento assincrono. A promessa pode s
 
 function falarDepoisDe(segundos, frase) { // 1o parametro é o tempo q eu quero que espere, e o 2o é a frase q quero q seja impressa no console.
     return new Promise((resolve, reject) => { // o 'resolve' vai ser uma função de callback que vai ser chamada quando a promessa for atendida. o parametro 'reject' é quando quiser rejeitar.
-        setTimeOut(() => {
+        setTimeout(() => {
             resolve(frase)
         }, segundos * 1000) // multiplicado em 1000 pra eu ter os segundos
     })
 }
+
+falarDepoisDe(3, 'Que Legal!')
+    .then(frase => frase.concat('?!?!'))
+    .then(outraFrase => console.log(outraFrase))
+    .catch(e => console.log(e))
+
+/////////////
+
+Usando callbacks aninhadas - 
+Vamos usar proprio modul 
